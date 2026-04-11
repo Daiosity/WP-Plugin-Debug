@@ -179,9 +179,12 @@ plugin-conflict-debugger/
 
 Near-term priorities:
 
+- callback mutation tracing with actor attribution and request-path correlation
 - stronger request-trace comparison views
 - deeper exact ownership mapping
 - improved plugin-focused diagnostics
+
+See [TASKS.md](./TASKS.md) for the actively maintained implementation list.
 - safer staging-oriented isolation workflows
 
 Longer-term premium-oriented direction:

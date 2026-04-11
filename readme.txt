@@ -4,7 +4,7 @@ Tags: diagnostics, debugging, plugins, conflicts, health
 Requires at least: 6.2
 Tested up to: 6.5
 Requires PHP: 8.1
-Stable tag: 1.0.27
+Stable tag: 1.0.28
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,11 @@ No. If `debug.log` is unavailable, the plugin degrades gracefully and explains t
 The current architecture is prepared for safe test mode, binary-search auto-isolation, scheduled scans, alerts, and staging-only advanced diagnostics.
 
 == Changelog ==
+
+= 1.0.28 =
+- Added a root task list so the next diagnostics milestones are tracked directly in the repository.
+- Upgraded callback mutation tracing so removed, replaced, and priority-shifted callbacks keep request scope, attribution state, and before/after callback snapshots.
+- Tightened callback mutation scoring so direct callback interference only escalates when actor attribution is present.
 
 = 1.0.27 =
 

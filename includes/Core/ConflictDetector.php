@@ -293,7 +293,7 @@ final class ConflictDetector {
 					'explanation'                       => $this->build_explanation( $plugin_a, $plugin_b, $best_category, $best_surface_key, $shared_resource, $request_context, $execution_surface ),
 					'why_scored_this_way'               => $this->heuristics->scoring_summary( $best_evidence, $best_score, $best_category, $best_severity ),
 					'why_this_is_not_or_is_actionable'  => $this->build_actionability_note( $best_category, $shared_resource, $request_context, $execution_surface ),
-					'recommended_next_step'             => $this->heuristics->suggestion_for( $best_surface_key ),
+					'recommended_next_step'             => $this->build_recommended_next_step( $best_surface_key, $request_context, $execution_surface, $shared_resource, $best_evidence ),
 				);
 			}
 		}
@@ -1000,10 +1000,14 @@ final class ConflictDetector {
 			$tier               = 'callback_mutation' === $type ? 'contextual' : 'concrete';
 			$strength           = 'callback_mutation' === $type ? 'context' : 'concrete';
 
-			if ( in_array( $mutation_kind, array( 'callback_removed', 'callback_replaced' ), true ) ) {
+			if ( in_array( $mutation_kind, array( 'callback_removed', 'callback_replaced' ), true ) && '' !== $actor_slug && '' !== $target_owner && in_array( $attribution_status, array( TraceEvent::ATTRIBUTION_DIRECT, TraceEvent::ATTRIBUTION_PARTIAL ), true ) ) {
 				$signal_key = 'direct_callback_mutation';
 				$tier       = 'concrete';
 				$strength   = 'concrete';
+			} elseif ( 'callback_priority_changed' === $mutation_kind ) {
+				$signal_key = 'callback_order_sensitivity';
+				$tier       = 'supporting';
+				$strength   = 'context';
 			} elseif ( 'asset_lifecycle' === $type && ! in_array( $attribution_status, array( 'attribution_direct', 'attribution_partial' ), true ) ) {
 				$tier     = 'supporting';
 				$strength = 'context';
@@ -1607,7 +1611,7 @@ final class ConflictDetector {
 		}
 
 		return in_array( $signal_type, array( 'asset_queue_mutation', 'asset_registry_mutation' ), true )
-			|| in_array( $mutation_kind, array( 'asset_state_mutation', 'callback_removed', 'callback_replaced' ), true );
+			|| 'asset_state_mutation' === $mutation_kind;
 	}
 
 	/**
@@ -1689,7 +1693,7 @@ final class ConflictDetector {
 		$type          = sanitize_key( (string) ( $entry['type'] ?? '' ) );
 		$mutation_kind = sanitize_key( (string) ( $entry['mutation_kind'] ?? '' ) );
 
-		return 'callback_mutation' === $type || 'callback_chain_churn' === $mutation_kind;
+		return 'callback_mutation' === $type || in_array( $mutation_kind, array( 'callback_chain_churn', 'callback_priority_changed' ), true );
 	}
 
 	/**
@@ -2524,6 +2528,70 @@ final class ConflictDetector {
 		}
 
 		return __( 'This is broad overlap only. Treat it as background context, not as proof of a conflict.', 'plugin-conflict-debugger' );
+	}
+
+	/**
+	 * Builds a more tailored next-step recommendation from the strongest evidence.
+	 *
+	 * @param string                           $surface_key Conflict surface key.
+	 * @param string                           $request_context Request context.
+	 * @param string                           $execution_surface Execution surface.
+	 * @param string                           $shared_resource Shared resource.
+	 * @param array<int, array<string, mixed>> $evidence_items Evidence items.
+	 * @return string
+	 */
+	private function build_recommended_next_step( string $surface_key, string $request_context, string $execution_surface, string $shared_resource, array $evidence_items ): string {
+		if ( $this->evidence_has_signal( $evidence_items, array( 'direct_callback_mutation' ) ) ) {
+			return sprintf(
+				/* translators: 1: hook or execution surface, 2: callback label or shared resource, 3: request context. */
+				__( 'Inspect remove_action and remove_filter activity on %1$s, then replay the affected %3$s request while tracing the callback chain for %2$s.', 'plugin-conflict-debugger' ),
+				'' !== $execution_surface ? $execution_surface : __( 'the affected hook', 'plugin-conflict-debugger' ),
+				'' !== $shared_resource ? $shared_resource : __( 'the removed callback', 'plugin-conflict-debugger' ),
+				'' !== $request_context ? $request_context : __( 'runtime', 'plugin-conflict-debugger' )
+			);
+		}
+
+		if ( $this->evidence_has_signal( $evidence_items, array( 'callback_order_sensitivity', 'callback_chain_churn' ) ) ) {
+			return sprintf(
+				/* translators: 1: hook or execution surface, 2: request context. */
+				__( 'Trace callback order on %1$s and compare priorities across the affected %2$s request before treating this as a confirmed conflict.', 'plugin-conflict-debugger' ),
+				'' !== $execution_surface ? $execution_surface : __( 'the affected hook', 'plugin-conflict-debugger' ),
+				'' !== $request_context ? $request_context : __( 'runtime', 'plugin-conflict-debugger' )
+			);
+		}
+
+		if ( $this->evidence_has_signal( $evidence_items, array( 'asset_state_mutation' ) ) ) {
+			return sprintf(
+				/* translators: 1: resource, 2: request context. */
+				__( 'Trace the asset lifecycle for %1$s and compare registration, queue, and final state on the affected %2$s request.', 'plugin-conflict-debugger' ),
+				'' !== $shared_resource ? $shared_resource : __( 'the affected handle', 'plugin-conflict-debugger' ),
+				'' !== $request_context ? $request_context : __( 'runtime', 'plugin-conflict-debugger' )
+			);
+		}
+
+		return $this->heuristics->suggestion_for( $surface_key );
+	}
+
+	/**
+	 * Returns whether the evidence list contains one of the given signal keys.
+	 *
+	 * @param array<int, array<string, mixed>> $evidence_items Evidence items.
+	 * @param string[]                         $signal_keys Signal keys.
+	 * @return bool
+	 */
+	private function evidence_has_signal( array $evidence_items, array $signal_keys ): bool {
+		$signal_keys = array_values( array_filter( array_map( 'sanitize_key', $signal_keys ) ) );
+		if ( empty( $signal_keys ) ) {
+			return false;
+		}
+
+		foreach ( $evidence_items as $evidence_item ) {
+			if ( in_array( sanitize_key( (string) ( $evidence_item['signal_key'] ?? '' ) ), $signal_keys, true ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

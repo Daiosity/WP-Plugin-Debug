@@ -3,7 +3,7 @@
  * Plugin Name: Plugin Conflict Debugger
  * Plugin URI: https://example.com/plugin-conflict-debugger
  * Description: Find likely plugin conflicts before you waste hours disabling plugins manually.
- * Version: 1.0.27
+ * Version: 1.0.28
  * Requires at least: 6.2
  * Requires PHP: 8.1
  * Author: Christo Theron
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PCD_VERSION', '1.0.27' );
+define( 'PCD_VERSION', '1.0.28' );
 define( 'PCD_FILE', __FILE__ );
 define( 'PCD_DIR', plugin_dir_path( __FILE__ ) );
 define( 'PCD_URL', plugin_dir_url( __FILE__ ) );

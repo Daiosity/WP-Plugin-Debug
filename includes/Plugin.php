@@ -60,7 +60,7 @@ final class Plugin {
 		$scanner      = new Scanner( $environment, $collector, $detector, $repository, $tracker, $traces );
 		$runtime      = new RuntimeTelemetry( $telemetry, $registry, $sessions );
 		$asset_tracer = new AssetLifecycleTracer( $telemetry, $registry, $sessions );
-		$mutations    = new RuntimeMutationTracker( $telemetry, $registry );
+		$mutations    = new RuntimeMutationTracker( $telemetry, $sessions );
 
 		$assets       = new Assets();
 		$dashboard    = new DashboardPage( $scanner, $repository, $scan_state, $sessions, $capabilities, $traces );

@@ -8,6 +8,12 @@ All notable changes to `Plugin Conflict Debugger` are tracked here.
 - Added a conservative asset lifecycle tracer that records plugin-owned handle registrations, queue changes, and state mutations with mutator attribution when it can be narrowed safely.
 - Expanded the diagnostics runtime viewer to surface request scope, actor attribution, target owners, and state changes so developers can inspect "what changed, where, and by whom" more directly.
 
+## 1.0.28
+
+- Added a root `TASKS.md` file so the next diagnostics milestones are tracked directly in the repository.
+- Reworked callback mutation tracing to record removed, replaced, and priority-shifted callbacks with request scope, attribution state, and before/after callback snapshots.
+- Tightened callback mutation scoring so pairwise escalation only happens when callback mutation evidence has real actor attribution.
+
 ## 1.0.26
 
 - Added strict hard gates so findings without strong proof cannot rise above Medium unless pair-specific runtime breakage is directly linked to the same context, execution surface, concrete resource, and request path.
