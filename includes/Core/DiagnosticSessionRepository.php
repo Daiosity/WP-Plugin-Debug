@@ -134,15 +134,15 @@ final class DiagnosticSessionRepository {
 	 */
 	public function get_supported_contexts(): array {
 		return array(
-			'all'      => __( 'Any site area', 'plugin-conflict-debugger' ),
-			'frontend' => __( 'Frontend', 'plugin-conflict-debugger' ),
-			'admin'    => __( 'Admin', 'plugin-conflict-debugger' ),
-			'ajax'     => __( 'AJAX / async request', 'plugin-conflict-debugger' ),
-			'rest'     => __( 'REST API', 'plugin-conflict-debugger' ),
-			'editor'   => __( 'Editor', 'plugin-conflict-debugger' ),
-			'login'    => __( 'Login / account', 'plugin-conflict-debugger' ),
-			'checkout' => __( 'Checkout / commerce', 'plugin-conflict-debugger' ),
-			'cron'     => __( 'Cron / background job', 'plugin-conflict-debugger' ),
+			'all'      => __( 'Any site area', 'conflict-debugger' ),
+			'frontend' => __( 'Frontend', 'conflict-debugger' ),
+			'admin'    => __( 'Admin', 'conflict-debugger' ),
+			'ajax'     => __( 'AJAX / async request', 'conflict-debugger' ),
+			'rest'     => __( 'REST API', 'conflict-debugger' ),
+			'editor'   => __( 'Editor', 'conflict-debugger' ),
+			'login'    => __( 'Login / account', 'conflict-debugger' ),
+			'checkout' => __( 'Checkout / commerce', 'conflict-debugger' ),
+			'cron'     => __( 'Cron / background job', 'conflict-debugger' ),
 		);
 	}
 
@@ -177,6 +177,6 @@ final class DiagnosticSessionRepository {
 	 */
 	private function label_for_context( string $context ): string {
 		$contexts = $this->get_supported_contexts();
-		return $contexts[ $context ] ?? __( 'Any site area', 'plugin-conflict-debugger' );
+		return $contexts[ $context ] ?? __( 'Any site area', 'conflict-debugger' );
 	}
 }

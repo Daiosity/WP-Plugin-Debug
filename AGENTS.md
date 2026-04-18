@@ -1,4 +1,4 @@
-# Plugin Conflict Debugger Agent Guide
+# Conflict Debugger Agent Guide
 
 ## Purpose
 

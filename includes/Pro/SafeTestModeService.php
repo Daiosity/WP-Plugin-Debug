@@ -22,8 +22,8 @@ final class SafeTestModeService {
 	public function describe(): array {
 		return array(
 			'available' => false,
-			'title'     => __( 'Safe Test Mode', 'plugin-conflict-debugger' ),
-			'message'   => __( 'Planned for premium. This mode should only simulate plugin isolation in staging or an explicitly approved diagnostic sandbox.', 'plugin-conflict-debugger' ),
+			'title'     => __( 'Safe Test Mode', 'conflict-debugger' ),
+			'message'   => __( 'Planned for premium. This mode should only simulate plugin isolation in staging or an explicitly approved diagnostic sandbox.', 'conflict-debugger' ),
 		);
 	}
 }

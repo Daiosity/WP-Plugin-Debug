@@ -1,10 +1,10 @@
-=== Plugin Conflict Debugger ===
+=== Conflict Debugger ===
 Contributors: christotheron
 Tags: diagnostics, debugging, plugins, conflicts, health
 Requires at least: 6.2
-Tested up to: 6.5
+Tested up to: 6.9
 Requires PHP: 8.1
-Stable tag: 1.1.1
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Find likely plugin conflicts before you waste hours disabling plugins manually.
 
 == Description ==
 
-Plugin Conflict Debugger is a focused diagnostics plugin for site owners, developers, and agencies who need a faster way to investigate likely plugin conflicts.
+Conflict Debugger is a focused diagnostics plugin for site owners, developers, and agencies who need a faster way to investigate likely plugin conflicts.
 
 The free/core foundation includes:
 
@@ -29,9 +29,9 @@ This plugin does not guarantee an exact root cause. It surfaces likely conflict 
 
 == Installation ==
 
-1. Upload the plugin files to the `/wp-content/plugins/plugin-conflict-debugger` directory, or install the plugin through the WordPress plugins screen.
+1. Upload the plugin files to the `/wp-content/plugins/conflict-debugger` directory, or install the plugin through the WordPress plugins screen.
 2. Activate the plugin through the Plugins screen in WordPress.
-3. Go to Tools > Plugin Conflict Debugger.
+3. Go to Tools > Conflict Debugger.
 4. Click "Run Scan" to generate your first report.
 
 == Frequently Asked Questions ==
@@ -49,6 +49,16 @@ No. If `debug.log` is unavailable, the plugin degrades gracefully and explains t
 The current architecture is prepared for safe test mode, binary-search auto-isolation, scheduled scans, alerts, and staging-only advanced diagnostics.
 
 == Changelog ==
+
+= 1.1.3 =
+- Renamed the distributable plugin slug, folder, admin page slug, ZIP outputs, and text domain from `plugin-conflict-debugger` to `conflict-debugger` so the project clears the final WordPress.org naming restriction around the word "plugin".
+- Updated packaging, LocalWP install paths, and repository docs to use the new `conflict-debugger` identity consistently.
+- Kept the GitHub repository as the canonical project URL for source, releases, and direct download access.
+
+= 1.1.2 =
+- Cleaned plugin bootstrap metadata and packaging defaults for WordPress.org checks, including a valid plugin URI, explicit GPL-compatible license headers, and a non-hidden languages placeholder file.
+- Removed manual textdomain loading and tightened bootstrap failure handling so Plugin Check no longer flags discouraged translation boot logic or production debug logging.
+- Started WordPress.org compatibility cleanup across dashboard, telemetry, and tracing code paths by fixing unslashed input handling, filesystem API usage, and translator-facing placeholder strings.
 
 = 1.1.1 =
 - Split trace-level mutation warnings out of the Error Signals summary so asset and callback tracing no longer look like live PHP or request failures.
@@ -123,7 +133,7 @@ The current architecture is prepared for safe test mode, binary-search auto-isol
 
 = 1.0.17 =
 
-* Fixed the host-friendly ZIP build so `plugin-conflict-debugger.zip` is truly flat at archive root while `plugin-conflict-debugger-wp-admin.zip` keeps the folder-inside structure for standard WordPress uploads.
+* Fixed the host-friendly ZIP build so `conflict-debugger.zip` is truly flat at archive root while `conflict-debugger-wp-admin.zip` keeps the folder-inside structure for standard WordPress uploads.
 
 = 1.0.16 =
 
@@ -142,7 +152,7 @@ The current architecture is prepared for safe test mode, binary-search auto-isol
 
 = 1.0.13 =
 
-* Restored strict WordPress-standard ZIP packaging with a single `plugin-conflict-debugger/` folder inside the archive so subfolders like `includes/` and `assets/` install correctly.
+* Restored strict WordPress-standard ZIP packaging with a single `conflict-debugger/` folder inside the archive so subfolders like `includes/` and `assets/` install correctly.
 
 = 1.0.12 =
 
@@ -152,7 +162,7 @@ The current architecture is prepared for safe test mode, binary-search auto-isol
 
 = 1.0.11 =
 
-* Added a strict standard-release build script that packages only the WordPress plugin files into a single top-level `plugin-conflict-debugger` folder.
+* Added a strict standard-release build script that packages only the WordPress plugin files into a single top-level `conflict-debugger` folder.
 * Standardized the rolling install ZIP to the WordPress-native folder-inside-zip format only.
 
 = 1.0.10 =

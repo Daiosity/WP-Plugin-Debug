@@ -145,11 +145,11 @@ final class ValidationModeRepository {
 	 */
 	public function get_supported_targets(): array {
 		return array(
-			'plugin_pair'  => __( 'Plugin pair', 'plugin-conflict-debugger' ),
-			'hook'         => __( 'Hook / execution surface', 'plugin-conflict-debugger' ),
-			'asset_handle' => __( 'Asset handle', 'plugin-conflict-debugger' ),
-			'rest_route'   => __( 'REST route', 'plugin-conflict-debugger' ),
-			'ajax_action'  => __( 'AJAX action', 'plugin-conflict-debugger' ),
+			'plugin_pair'  => __( 'Plugin pair', 'conflict-debugger' ),
+			'hook'         => __( 'Hook / execution surface', 'conflict-debugger' ),
+			'asset_handle' => __( 'Asset handle', 'conflict-debugger' ),
+			'rest_route'   => __( 'REST route', 'conflict-debugger' ),
+			'ajax_action'  => __( 'AJAX action', 'conflict-debugger' ),
 		);
 	}
 
@@ -342,7 +342,7 @@ final class ValidationModeRepository {
 		}
 
 		if ( empty( $parts ) ) {
-			return __( 'Focused validation', 'plugin-conflict-debugger' );
+			return __( 'Focused validation', 'conflict-debugger' );
 		}
 
 		return implode( ' - ', $parts );

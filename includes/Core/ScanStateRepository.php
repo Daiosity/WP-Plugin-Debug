@@ -54,7 +54,7 @@ final class ScanStateRepository {
 		$state = array(
 			'status'        => 'queued',
 			'progress'      => 5,
-			'message'       => __( 'Scan queued. Waiting for the background worker to begin.', 'plugin-conflict-debugger' ),
+			'message'       => __( 'Scan queued. Waiting for the background worker to begin.', 'conflict-debugger' ),
 			'token'         => $token,
 			'started_at'    => current_time( 'mysql' ),
 			'updated_at'    => current_time( 'mysql' ),
@@ -104,7 +104,7 @@ final class ScanStateRepository {
 		$state['status']        = 'complete';
 		$state['token']         = $token;
 		$state['progress']      = 100;
-		$state['message']       = __( 'Scan complete. Results are ready to review.', 'plugin-conflict-debugger' );
+		$state['message']       = __( 'Scan complete. Results are ready to review.', 'conflict-debugger' );
 		$state['updated_at']    = current_time( 'mysql' );
 		$state['completed_at']  = current_time( 'mysql' );
 		$state['finding_count'] = $finding_count;
@@ -125,7 +125,7 @@ final class ScanStateRepository {
 		$state                 = $this->get();
 		$state['status']       = 'failed';
 		$state['token']        = $token;
-		$state['message']      = __( 'The scan did not finish successfully.', 'plugin-conflict-debugger' );
+		$state['message']      = __( 'The scan did not finish successfully.', 'conflict-debugger' );
 		$state['updated_at']   = current_time( 'mysql' );
 		$state['completed_at'] = current_time( 'mysql' );
 		$state['last_error']   = $error;
@@ -143,7 +143,7 @@ final class ScanStateRepository {
 		return array(
 			'status'        => 'idle',
 			'progress'      => 0,
-			'message'       => __( 'No scan is running.', 'plugin-conflict-debugger' ),
+			'message'       => __( 'No scan is running.', 'conflict-debugger' ),
 			'token'         => '',
 			'started_at'    => '',
 			'updated_at'    => '',

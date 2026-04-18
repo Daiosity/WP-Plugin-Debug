@@ -27,7 +27,7 @@ final class Environment {
 		return array(
 			'wordpress_version' => get_bloginfo( 'version' ),
 			'php_version'       => PHP_VERSION,
-			'active_theme'      => $theme->exists() ? $theme->get( 'Name' ) : __( 'Unknown', 'plugin-conflict-debugger' ),
+			'active_theme'      => $theme->exists() ? $theme->get( 'Name' ) : __( 'Unknown', 'conflict-debugger' ),
 			'is_multisite'      => is_multisite(),
 			'memory_limit'      => wp_convert_hr_to_bytes( $memory_limit ?: '0' ),
 			'max_memory_limit'  => wp_convert_hr_to_bytes( $max_memory ?: '0' ),

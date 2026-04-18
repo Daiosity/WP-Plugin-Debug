@@ -1,6 +1,18 @@
 # Changelog
 
-All notable changes to `Plugin Conflict Debugger` are tracked here.
+All notable changes to `Conflict Debugger` are tracked here.
+
+## 1.1.3
+
+- Renamed the plugin slug, distributable folder, ZIP outputs, admin page slug, and text domain from `plugin-conflict-debugger` to `conflict-debugger`.
+- Finished the WordPress.org Plugin Check cleanup with the slug rename, leaving the project clear of the restricted `plugin` term in its public identity.
+- Updated LocalWP install expectations, build outputs, and repo docs so GitHub remains the canonical source and download location for releases.
+
+## 1.1.2
+
+- Started a dedicated WordPress.org Plugin Check cleanup pass by fixing bootstrap metadata, GPL license headers, and the plugin readme compatibility fields.
+- Replaced the hidden `languages/.gitkeep` placeholder with a WordPress-safe `languages/index.php` file and removed production debug logging from bootstrap failure handling.
+- Began hardening request/input and i18n code paths so the dashboard, telemetry, and tracer layers are friendlier to Plugin Check and future review.
 
 ## 1.1.1
 
@@ -78,7 +90,7 @@ All notable changes to `Plugin Conflict Debugger` are tracked here.
 
 ## 1.0.17
 
-- Fixed the host-friendly ZIP build so `plugin-conflict-debugger.zip` is truly flat at archive root while `plugin-conflict-debugger-wp-admin.zip` keeps the folder-inside structure for standard WordPress uploads.
+- Fixed the host-friendly ZIP build so `conflict-debugger.zip` is truly flat at archive root while `conflict-debugger-wp-admin.zip` keeps the folder-inside structure for standard WordPress uploads.
 
 ## 1.0.16
 
@@ -97,7 +109,7 @@ All notable changes to `Plugin Conflict Debugger` are tracked here.
 
 ## 1.0.13
 
-- Restored strict WordPress-standard ZIP packaging with a single `plugin-conflict-debugger/` folder inside the archive so subfolders like `includes/` and `assets/` install correctly.
+- Restored strict WordPress-standard ZIP packaging with a single `conflict-debugger/` folder inside the archive so subfolders like `includes/` and `assets/` install correctly.
 
 ## 1.0.12
 
@@ -107,7 +119,7 @@ All notable changes to `Plugin Conflict Debugger` are tracked here.
 
 ## 1.0.11
 
-- Added a strict standard-release build script that packages only the WordPress plugin files into a single top-level `plugin-conflict-debugger` folder.
+- Added a strict standard-release build script that packages only the WordPress plugin files into a single top-level `conflict-debugger` folder.
 - Standardized the rolling install ZIP to the WordPress-native folder-inside-zip format only.
 
 ## 1.0.10

@@ -509,7 +509,7 @@ final class RuntimeMutationTracker {
 		if ( 'callback_priority_changed' === $mutation_kind ) {
 			return sprintf(
 				/* translators: 1: callback label, 2: owner slug, 3: old priority, 4: new priority, 5: hook name. */
-				__( 'Callback %1$s owned by %2$s moved from priority %3$d to %4$d on %5$s during this request.', 'plugin-conflict-debugger' ),
+				__( 'Callback %1$s owned by %2$s moved from priority %3$d to %4$d on %5$s during this request.', 'conflict-debugger' ),
 				$callback_label,
 				$target_owner,
 				(int) ( $previous_meta['priority'] ?? 0 ),
@@ -521,7 +521,7 @@ final class RuntimeMutationTracker {
 		if ( 'callback_replaced' === $mutation_kind && '' !== $actor_slug && TraceEvent::ATTRIBUTION_UNKNOWN !== $attribution_status ) {
 			return sprintf(
 				/* translators: 1: callback label, 2: target owner slug, 3: hook name, 4: actor slug. */
-				__( 'Callback %1$s owned by %2$s disappeared from %3$s while %4$s introduced a replacement candidate at the same priority in the same request.', 'plugin-conflict-debugger' ),
+				__( 'Callback %1$s owned by %2$s disappeared from %3$s while %4$s introduced a replacement candidate at the same priority in the same request.', 'conflict-debugger' ),
 				$callback_label,
 				$target_owner,
 				$hook_name,
@@ -532,7 +532,7 @@ final class RuntimeMutationTracker {
 		if ( 'callback_removed' === $mutation_kind && '' !== $actor_slug && TraceEvent::ATTRIBUTION_UNKNOWN !== $attribution_status ) {
 			return sprintf(
 				/* translators: 1: callback label, 2: target owner slug, 3: hook name, 4: actor slug. */
-				__( 'Callback %1$s owned by %2$s was present earlier on %3$s and later disappeared while %4$s was the clearest mutator candidate on the same request path.', 'plugin-conflict-debugger' ),
+				__( 'Callback %1$s owned by %2$s was present earlier on %3$s and later disappeared while %4$s was the clearest mutator candidate on the same request path.', 'conflict-debugger' ),
 				$callback_label,
 				$target_owner,
 				$hook_name,
@@ -542,7 +542,7 @@ final class RuntimeMutationTracker {
 
 		return sprintf(
 			/* translators: 1: callback label, 2: target owner slug, 3: hook name. */
-			__( 'Callback %1$s owned by %2$s was present earlier on %3$s but absent in a later snapshot. The mutating actor could not yet be attributed with confidence.', 'plugin-conflict-debugger' ),
+			__( 'Callback %1$s owned by %2$s was present earlier on %3$s but absent in a later snapshot. The mutating actor could not yet be attributed with confidence.', 'conflict-debugger' ),
 			$callback_label,
 			$target_owner,
 			$hook_name
@@ -599,7 +599,7 @@ final class RuntimeMutationTracker {
 		$resource_hints  = array();
 
 		if ( wp_doing_ajax() ) {
-			$action = sanitize_key( (string) ( $_REQUEST['action'] ?? '' ) );
+			$action = $this->current_ajax_action();
 			if ( '' !== $action ) {
 				$scope_type       = 'ajax';
 				$request_scope    = 'ajax:' . $action;
@@ -692,8 +692,26 @@ final class RuntimeMutationTracker {
 	 * @return string
 	 */
 	private function current_request_uri(): string {
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( (string) $_SERVER['REQUEST_URI'] ) : '/';
-		return sanitize_text_field( $request_uri );
+		if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+			return '/';
+		}
+
+		return sanitize_text_field( wp_unslash( (string) $_SERVER['REQUEST_URI'] ) );
+	}
+
+	/**
+	 * Returns the current AJAX action name.
+	 *
+	 * @return string
+	 */
+	private function current_ajax_action(): string {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only request classification for mutation scope capture.
+		if ( ! isset( $_REQUEST['action'] ) ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only request classification for mutation scope capture.
+		return sanitize_key( wp_unslash( (string) $_REQUEST['action'] ) );
 	}
 
 	/**
@@ -702,9 +720,10 @@ final class RuntimeMutationTracker {
 	 * @return string
 	 */
 	private function detect_rest_route(): string {
-		$rest_route = isset( $_REQUEST['rest_route'] ) ? wp_unslash( (string) $_REQUEST['rest_route'] ) : '';
-		if ( '' !== $rest_route ) {
-			return sanitize_text_field( $rest_route );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only route detection for mutation scope capture.
+		if ( isset( $_REQUEST['rest_route'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only route detection for mutation scope capture.
+			return sanitize_text_field( wp_unslash( (string) $_REQUEST['rest_route'] ) );
 		}
 
 		$request_uri = $this->current_request_uri();

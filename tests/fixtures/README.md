@@ -60,7 +60,7 @@ Expected result:
 1. Copy one scenario pair into a local WordPress test site.
 2. Activate the pair you want to test.
 3. Reproduce the relevant request path if needed.
-4. Run Plugin Conflict Debugger.
+4. Run Conflict Debugger.
 5. Confirm the finding category, severity, confidence, and wording match the expected outcome above.
 
 ## LocalWP Workflow
@@ -99,6 +99,6 @@ powershell -ExecutionPolicy Bypass -File .\WordPress Site\tools\invoke-pcd-admin
 
 Recommended habit:
 
-- keep only `plugin-conflict-debugger` active for the clean baseline
+- keep only `conflict-debugger` active for the clean baseline
 - activate one fixture scenario pair at a time
 - run a fresh scan after reproducing the relevant request path

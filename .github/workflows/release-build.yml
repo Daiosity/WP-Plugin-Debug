@@ -24,10 +24,10 @@ jobs:
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: plugin-conflict-debugger-packages
+          name: conflict-debugger-packages
           path: |
-            build/plugin-conflict-debugger-wp-admin.zip
-            build/plugin-conflict-debugger.zip
+            build/conflict-debugger-wp-admin.zip
+            build/conflict-debugger.zip
 
       - name: Publish tagged release assets
         if: startsWith(github.ref, 'refs/tags/v')
@@ -35,5 +35,5 @@ jobs:
         with:
           generate_release_notes: true
           files: |
-            build/plugin-conflict-debugger-wp-admin.zip
-            build/plugin-conflict-debugger.zip
+            build/conflict-debugger-wp-admin.zip
+            build/conflict-debugger.zip

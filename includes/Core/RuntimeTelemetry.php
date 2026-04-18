@@ -112,11 +112,12 @@ final class RuntimeTelemetry {
 	public function handle_runtime_event(): void {
 		check_ajax_referer( 'pcd_runtime_event', 'nonce' );
 
-		$posted_context = sanitize_text_field( (string) ( $_POST['request_context'] ?? '' ) );
+		$posted_data    = wp_unslash( $_POST );
+		$posted_context = sanitize_text_field( (string) ( $posted_data['request_context'] ?? '' ) );
 		$server_context = $this->build_request_context();
-		$request_scope  = sanitize_text_field( (string) ( $_POST['request_scope'] ?? $server_context['request_scope'] ?? '' ) );
-		$scope_type     = sanitize_key( (string) ( $_POST['scope_type'] ?? $server_context['scope_type'] ?? '' ) );
-		$request_id     = sanitize_text_field( (string) ( $_POST['request_id'] ?? '' ) );
+		$request_scope  = sanitize_text_field( (string) ( $posted_data['request_scope'] ?? $server_context['request_scope'] ?? '' ) );
+		$scope_type     = sanitize_key( (string) ( $posted_data['scope_type'] ?? $server_context['scope_type'] ?? '' ) );
+		$request_id     = sanitize_text_field( (string) ( $posted_data['request_id'] ?? '' ) );
 		if ( '' === $request_id ) {
 			$request_id = sanitize_text_field( (string) ( $server_context['request_id'] ?? TraceEvent::current_request_id() ) );
 		}
@@ -126,28 +127,28 @@ final class RuntimeTelemetry {
 			'request_id'           => $request_id,
 			'sequence'             => 0,
 			'timestamp'            => current_time( 'mysql' ),
-			'type'                 => sanitize_key( (string) ( $_POST['type'] ?? 'client' ) ),
+			'type'                 => sanitize_key( (string) ( $posted_data['type'] ?? 'client' ) ),
 			'evidence_source'      => TraceEvent::SOURCE_CLIENT,
-			'level'                => sanitize_key( (string) ( $_POST['level'] ?? 'error' ) ),
-			'message'              => sanitize_textarea_field( (string) ( $_POST['message'] ?? '' ) ),
+			'level'                => sanitize_key( (string) ( $posted_data['level'] ?? 'error' ) ),
+			'message'              => sanitize_textarea_field( (string) ( $posted_data['message'] ?? '' ) ),
 			'request_context'      => '' !== $posted_context ? $posted_context : sanitize_text_field( (string) ( $server_context['request_context'] ?? '' ) ),
-			'request_uri'          => sanitize_text_field( (string) ( $_POST['request_uri'] ?? $server_context['request_uri'] ?? '' ) ),
+			'request_uri'          => sanitize_text_field( (string) ( $posted_data['request_uri'] ?? $server_context['request_uri'] ?? '' ) ),
 			'request_scope'        => $request_scope,
 			'scope_type'           => $scope_type,
-			'source'               => sanitize_text_field( (string) ( $_POST['source'] ?? '' ) ),
-			'resource'             => sanitize_text_field( (string) ( $_POST['resource'] ?? '' ) ),
-			'resource_type'        => sanitize_key( (string) ( $_POST['resource_type'] ?? '' ) ),
-			'resource_key'         => sanitize_text_field( (string) ( $_POST['resource_key'] ?? '' ) ),
-			'execution_surface'    => sanitize_text_field( (string) ( $_POST['execution_surface'] ?? '' ) ),
-			'hook'                 => sanitize_text_field( (string) ( $_POST['hook'] ?? '' ) ),
-			'callback'             => sanitize_text_field( (string) ( $_POST['callback'] ?? '' ) ),
-			'priority'             => absint( $_POST['priority'] ?? 0 ),
-			'status_code'          => absint( $_POST['status_code'] ?? 0 ),
-			'session_id'           => sanitize_text_field( (string) ( $_POST['session_id'] ?? '' ) ),
-			'resource_hints'       => $this->normalize_resource_hints( wp_unslash( $_POST['resource_hints'] ?? '' ) ),
-			'attribution_status'   => sanitize_key( (string) ( $_POST['attribution_status'] ?? TraceEvent::ATTRIBUTION_UNKNOWN ) ),
-			'contamination_status' => sanitize_key( (string) ( $_POST['contamination_status'] ?? TraceEvent::CONTAMINATION_NONE ) ),
-			'mutation_status'      => sanitize_key( (string) ( $_POST['mutation_status'] ?? TraceEvent::MUTATION_NONE ) ),
+			'source'               => sanitize_text_field( (string) ( $posted_data['source'] ?? '' ) ),
+			'resource'             => sanitize_text_field( (string) ( $posted_data['resource'] ?? '' ) ),
+			'resource_type'        => sanitize_key( (string) ( $posted_data['resource_type'] ?? '' ) ),
+			'resource_key'         => sanitize_text_field( (string) ( $posted_data['resource_key'] ?? '' ) ),
+			'execution_surface'    => sanitize_text_field( (string) ( $posted_data['execution_surface'] ?? '' ) ),
+			'hook'                 => sanitize_text_field( (string) ( $posted_data['hook'] ?? '' ) ),
+			'callback'             => sanitize_text_field( (string) ( $posted_data['callback'] ?? '' ) ),
+			'priority'             => absint( $posted_data['priority'] ?? 0 ),
+			'status_code'          => absint( $posted_data['status_code'] ?? 0 ),
+			'session_id'           => sanitize_text_field( (string) ( $posted_data['session_id'] ?? '' ) ),
+			'resource_hints'       => $this->normalize_resource_hints( $posted_data['resource_hints'] ?? '' ),
+			'attribution_status'   => sanitize_key( (string) ( $posted_data['attribution_status'] ?? TraceEvent::ATTRIBUTION_UNKNOWN ) ),
+			'contamination_status' => sanitize_key( (string) ( $posted_data['contamination_status'] ?? TraceEvent::CONTAMINATION_NONE ) ),
+			'mutation_status'      => sanitize_key( (string) ( $posted_data['mutation_status'] ?? TraceEvent::MUTATION_NONE ) ),
 		);
 
 		$active_session = $this->resolve_active_session_for_context( (string) $event['request_context'] );
@@ -228,7 +229,7 @@ final class RuntimeTelemetry {
 					'level'                => $status_code >= 500 ? 'server-error' : 'client-error',
 					'message'              => sprintf(
 						/* translators: %d status code. */
-						__( 'Observed HTTP response %d during request execution.', 'plugin-conflict-debugger' ),
+						__( 'Observed HTTP response %d during request execution.', 'conflict-debugger' ),
 						$status_code
 					),
 					'request_context'      => (string) ( $context['request_context'] ?? '' ),
@@ -312,7 +313,7 @@ final class RuntimeTelemetry {
 		}
 
 		if ( wp_doing_ajax() ) {
-			$context['ajax_action'] = sanitize_key( (string) ( $_REQUEST['action'] ?? '' ) );
+			$context['ajax_action'] = $this->current_ajax_action();
 			$context['resource']    = (string) $context['ajax_action'];
 		}
 
@@ -339,7 +340,7 @@ final class RuntimeTelemetry {
 	 */
 	private function current_request_scope(): array {
 		if ( wp_doing_ajax() ) {
-			$action = sanitize_key( (string) ( $_REQUEST['action'] ?? '' ) );
+			$action = $this->current_ajax_action();
 			if ( '' !== $action ) {
 				return array(
 					'scope' => 'ajax:' . $action,
@@ -436,8 +437,26 @@ final class RuntimeTelemetry {
 	 * @return string
 	 */
 	private function current_request_uri(): string {
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( (string) $_SERVER['REQUEST_URI'] ) : '/';
-		return sanitize_text_field( $request_uri );
+		if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+			return '/';
+		}
+
+		return sanitize_text_field( wp_unslash( (string) $_SERVER['REQUEST_URI'] ) );
+	}
+
+	/**
+	 * Returns the current AJAX action name.
+	 *
+	 * @return string
+	 */
+	private function current_ajax_action(): string {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only request classification for runtime context capture.
+		if ( ! isset( $_REQUEST['action'] ) ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only request classification for runtime context capture.
+		return sanitize_key( wp_unslash( (string) $_REQUEST['action'] ) );
 	}
 
 	/**
@@ -446,9 +465,10 @@ final class RuntimeTelemetry {
 	 * @return string
 	 */
 	private function detect_rest_route(): string {
-		$rest_route = isset( $_REQUEST['rest_route'] ) ? wp_unslash( (string) $_REQUEST['rest_route'] ) : '';
-		if ( '' !== $rest_route ) {
-			return sanitize_text_field( $rest_route );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only route detection for runtime context capture.
+		if ( isset( $_REQUEST['rest_route'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only route detection for runtime context capture.
+			return sanitize_text_field( wp_unslash( (string) $_REQUEST['rest_route'] ) );
 		}
 
 		$request_uri = $this->current_request_uri();
@@ -506,7 +526,7 @@ final class RuntimeTelemetry {
 		$hints = array();
 
 		if ( wp_doing_ajax() ) {
-			$action = sanitize_key( (string) ( $_REQUEST['action'] ?? '' ) );
+			$action = $this->current_ajax_action();
 			if ( '' !== $action ) {
 				$hints[] = 'ajax:' . $action;
 			}

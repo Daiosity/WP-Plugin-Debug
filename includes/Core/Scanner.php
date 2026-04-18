@@ -100,15 +100,15 @@ final class Scanner {
 	 * @return array<string, mixed>
 	 */
 	public function run_scan_with_progress( ?callable $progress_callback = null ): array {
-		$this->notify_progress( $progress_callback, __( 'Preparing scan context...', 'plugin-conflict-debugger' ), 10 );
+		$this->notify_progress( $progress_callback, __( 'Preparing scan context...', 'conflict-debugger' ), 10 );
 		$plugins       = $this->get_active_plugins();
-		$this->notify_progress( $progress_callback, __( 'Capturing environment details...', 'plugin-conflict-debugger' ), 30 );
+		$this->notify_progress( $progress_callback, __( 'Capturing environment details...', 'conflict-debugger' ), 30 );
 		$environment   = $this->environment->snapshot();
-		$this->notify_progress( $progress_callback, __( 'Collecting runtime and log signals...', 'plugin-conflict-debugger' ), 50 );
+		$this->notify_progress( $progress_callback, __( 'Collecting runtime and log signals...', 'conflict-debugger' ), 50 );
 		$error_signals = $this->error_collector->collect();
-		$this->notify_progress( $progress_callback, __( 'Analyzing plugin interactions...', 'plugin-conflict-debugger' ), 75 );
+		$this->notify_progress( $progress_callback, __( 'Analyzing plugin interactions...', 'conflict-debugger' ), 75 );
 		$findings      = $this->detector->detect( $plugins, $error_signals, $environment );
-		$this->notify_progress( $progress_callback, __( 'Saving scan results...', 'plugin-conflict-debugger' ), 90 );
+		$this->notify_progress( $progress_callback, __( 'Saving scan results...', 'conflict-debugger' ), 90 );
 		$summary       = $this->build_summary( $plugins, $error_signals, $findings );
 		$focus_session = array();
 		if ( is_array( $error_signals['diagnostic_session']['active'] ?? null ) && ! empty( $error_signals['diagnostic_session']['active']['id'] ) ) {

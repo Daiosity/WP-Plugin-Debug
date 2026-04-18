@@ -43,13 +43,6 @@ final class Plugin {
 	 * @return void
 	 */
 	public function boot(): void {
-		add_action(
-			'init',
-			function (): void {
-				$this->load_textdomain();
-			}
-		);
-
 		$capabilities = new Capabilities();
 		$repository   = new ResultsRepository();
 		$telemetry    = new RuntimeTelemetryRepository();
@@ -83,18 +76,5 @@ final class Plugin {
 		$runtime->register();
 		$asset_tracer->register();
 		$mutations->register();
-	}
-
-	/**
-	 * Loads plugin translations.
-	 *
-	 * @return void
-	 */
-	private function load_textdomain(): void {
-		load_plugin_textdomain(
-			'plugin-conflict-debugger',
-			false,
-			dirname( PCD_BASENAME ) . '/languages'
-		);
 	}
 }

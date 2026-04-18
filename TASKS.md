@@ -1,4 +1,4 @@
-# Plugin Conflict Debugger Task List
+# Conflict Debugger Task List
 
 This task list keeps the next diagnostics milestones concrete and visible in the repository.
 

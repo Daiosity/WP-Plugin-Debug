@@ -27,8 +27,8 @@ final class Scheduler {
 	public function describe(): array {
 		return array(
 			'available' => false,
-			'title'     => __( 'Scheduled Scans and Alerts', 'plugin-conflict-debugger' ),
-			'message'   => __( 'Planned for premium. The architecture already reserves a cron hook for future scheduled scans and notifications.', 'plugin-conflict-debugger' ),
+			'title'     => __( 'Scheduled Scans and Alerts', 'conflict-debugger' ),
+			'message'   => __( 'Planned for premium. The architecture already reserves a cron hook for future scheduled scans and notifications.', 'conflict-debugger' ),
 		);
 	}
 }

@@ -383,25 +383,25 @@ final class Heuristics {
 		$runtime_count = (int) ( $breakdown['runtime_breakage'] ?? 0 );
 
 		if ( 'overlap' === $category ) {
-			return __( 'Scored conservatively because the evidence stays in normal overlap territory without same-resource proof.', 'plugin-conflict-debugger' );
+			return __( 'Scored conservatively because the evidence stays in normal overlap territory without same-resource proof.', 'conflict-debugger' );
 		}
 
 		if ( 'shared_surface' === $category ) {
 			return 0 === $strong_count
-				? __( 'Scored as a shared surface because the finding is driven by common lifecycle overlap and supporting context only. No pair-specific mutation evidence was observed.', 'plugin-conflict-debugger' )
-				: __( 'Scored as a shared surface because the plugins overlap in the same context, but no exact shared resource or direct mutation was proven.', 'plugin-conflict-debugger' );
+				? __( 'Scored as a shared surface because the finding is driven by common lifecycle overlap and supporting context only. No pair-specific mutation evidence was observed.', 'conflict-debugger' )
+				: __( 'Scored as a shared surface because the plugins overlap in the same context, but no exact shared resource or direct mutation was proven.', 'conflict-debugger' );
 		}
 
 		if ( 'potential_interference' === $category ) {
 			return 0 === $strong_count
-				? __( 'Scored as potential interference because supporting indicators cluster on one request path, but no pair-specific mutation evidence was observed.', 'plugin-conflict-debugger' )
-				: __( 'Scored as potential interference because supporting indicators cluster in one request context, but the proof is still incomplete.', 'plugin-conflict-debugger' );
+				? __( 'Scored as potential interference because supporting indicators cluster on one request path, but no pair-specific mutation evidence was observed.', 'conflict-debugger' )
+				: __( 'Scored as potential interference because supporting indicators cluster in one request context, but the proof is still incomplete.', 'conflict-debugger' );
 		}
 
 		if ( 'probable_conflict' === $category ) {
 			return sprintf(
 				/* translators: 1: confidence, 2: severity. */
-				__( 'Scored as %2$s at %1$d%% because the finding includes direct shared-resource or mutation evidence, but not enough observed breakage to call it confirmed.', 'plugin-conflict-debugger' ),
+				__( 'Scored as %2$s at %1$d%% because the finding includes direct shared-resource or mutation evidence, but not enough observed breakage to call it confirmed.', 'conflict-debugger' ),
 				$confidence,
 				$severity
 			);
@@ -410,12 +410,12 @@ final class Heuristics {
 		if ( 'confirmed_conflict' === $category ) {
 			return sprintf(
 				/* translators: %d strong proof count. */
-				__( 'Scored as confirmed because runtime breakage and direct interference signals appear together on the same execution path (%d strong proof signals recorded).', 'plugin-conflict-debugger' ),
+				__( 'Scored as confirmed because runtime breakage and direct interference signals appear together on the same execution path (%d strong proof signals recorded).', 'conflict-debugger' ),
 				$strong_count + $runtime_count
 			);
 		}
 
-		return __( 'Scored conservatively based on the strongest evidence tier available.', 'plugin-conflict-debugger' );
+		return __( 'Scored conservatively based on the strongest evidence tier available.', 'conflict-debugger' );
 	}
 
 	/**
@@ -462,24 +462,24 @@ final class Heuristics {
 	 */
 	public function suggestion_for( string $surface_key ): string {
 		$suggestions = array(
-			'frontend_rendering'     => __( 'Reproduce the affected frontend view in staging and compare output filters, shortcodes, and template overrides one plugin at a time.', 'plugin-conflict-debugger' ),
-			'asset_loading'          => __( 'Inspect the affected page in staging, review duplicated handles or libraries, and disable one asset or optimization layer at a time.', 'plugin-conflict-debugger' ),
-			'admin_screen'           => __( 'Open the affected admin screen in staging and compare menu/page slugs, save handlers, and admin assets one plugin at a time.', 'plugin-conflict-debugger' ),
-			'editor'                 => __( 'Reproduce the issue in the editor context first, then test metaboxes, editor assets, and serialization behavior with one plugin disabled.', 'plugin-conflict-debugger' ),
-			'authentication_account' => __( 'Retest login, registration, or profile flows in staging and compare redirect, auth, and account hooks one plugin at a time.', 'plugin-conflict-debugger' ),
-			'rest_api_ajax'          => __( 'Call the affected REST route or AJAX action in staging and verify which plugin owns the endpoint, auth logic, or nonce flow.', 'plugin-conflict-debugger' ),
-			'forms_submission'       => __( 'Submit the affected form in staging and compare validation, anti-spam, and processing handlers with one plugin disabled.', 'plugin-conflict-debugger' ),
-			'caching_optimization'   => __( 'Retest the affected page with one caching or optimization layer disabled and review minification, defer, delay, and lazy-load settings.', 'plugin-conflict-debugger' ),
-			'seo_metadata'           => __( 'Inspect page source and sitemap output in staging to confirm which plugin should own canonicals, schema, robots, and metadata.', 'plugin-conflict-debugger' ),
-			'rewrite_routing'        => __( 'Flush permalinks in staging and retest the affected route, endpoint, or query var with one routing-related plugin disabled.', 'plugin-conflict-debugger' ),
-			'content_model'          => __( 'Review the duplicate registration key in staging and decide which plugin should own the post type, taxonomy, or content registration.', 'plugin-conflict-debugger' ),
-			'email_notifications'    => __( 'Trigger the affected notification path in staging and verify whether more than one plugin is altering or sending the same mail flow.', 'plugin-conflict-debugger' ),
-			'security_access'        => __( 'Retest the blocked route or login flow in staging and compare redirect, capability, and access-control behavior one plugin at a time.', 'plugin-conflict-debugger' ),
-			'background_processing'  => __( 'Review the affected cron or background task in staging and check whether multiple plugins are queueing or mutating the same workflow.', 'plugin-conflict-debugger' ),
-			'commerce_checkout'      => __( 'Reproduce the issue on the affected cart, checkout, or product flow in staging and test one commerce customization layer at a time.', 'plugin-conflict-debugger' ),
+			'frontend_rendering'     => __( 'Reproduce the affected frontend view in staging and compare output filters, shortcodes, and template overrides one plugin at a time.', 'conflict-debugger' ),
+			'asset_loading'          => __( 'Inspect the affected page in staging, review duplicated handles or libraries, and disable one asset or optimization layer at a time.', 'conflict-debugger' ),
+			'admin_screen'           => __( 'Open the affected admin screen in staging and compare menu/page slugs, save handlers, and admin assets one plugin at a time.', 'conflict-debugger' ),
+			'editor'                 => __( 'Reproduce the issue in the editor context first, then test metaboxes, editor assets, and serialization behavior with one plugin disabled.', 'conflict-debugger' ),
+			'authentication_account' => __( 'Retest login, registration, or profile flows in staging and compare redirect, auth, and account hooks one plugin at a time.', 'conflict-debugger' ),
+			'rest_api_ajax'          => __( 'Call the affected REST route or AJAX action in staging and verify which plugin owns the endpoint, auth logic, or nonce flow.', 'conflict-debugger' ),
+			'forms_submission'       => __( 'Submit the affected form in staging and compare validation, anti-spam, and processing handlers with one plugin disabled.', 'conflict-debugger' ),
+			'caching_optimization'   => __( 'Retest the affected page with one caching or optimization layer disabled and review minification, defer, delay, and lazy-load settings.', 'conflict-debugger' ),
+			'seo_metadata'           => __( 'Inspect page source and sitemap output in staging to confirm which plugin should own canonicals, schema, robots, and metadata.', 'conflict-debugger' ),
+			'rewrite_routing'        => __( 'Flush permalinks in staging and retest the affected route, endpoint, or query var with one routing-related plugin disabled.', 'conflict-debugger' ),
+			'content_model'          => __( 'Review the duplicate registration key in staging and decide which plugin should own the post type, taxonomy, or content registration.', 'conflict-debugger' ),
+			'email_notifications'    => __( 'Trigger the affected notification path in staging and verify whether more than one plugin is altering or sending the same mail flow.', 'conflict-debugger' ),
+			'security_access'        => __( 'Retest the blocked route or login flow in staging and compare redirect, capability, and access-control behavior one plugin at a time.', 'conflict-debugger' ),
+			'background_processing'  => __( 'Review the affected cron or background task in staging and check whether multiple plugins are queueing or mutating the same workflow.', 'conflict-debugger' ),
+			'commerce_checkout'      => __( 'Reproduce the issue on the affected cart, checkout, or product flow in staging and test one commerce customization layer at a time.', 'conflict-debugger' ),
 		);
 
-		return $suggestions[ $surface_key ] ?? __( 'Reproduce the affected request in staging first, then test one owner of the shared resource at a time.', 'plugin-conflict-debugger' );
+		return $suggestions[ $surface_key ] ?? __( 'Reproduce the affected request in staging first, then test one owner of the shared resource at a time.', 'conflict-debugger' );
 	}
 
 	/**

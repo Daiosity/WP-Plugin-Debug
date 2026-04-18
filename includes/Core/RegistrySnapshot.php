@@ -427,6 +427,7 @@ final class RegistrySnapshot {
 	 * @return string
 	 */
 	private function detect_owner_from_backtrace(): string {
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_debug_backtrace -- Used for conservative ownership inference during registration snapshots.
 		$frames = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 20 );
 
 		foreach ( $frames as $frame ) {
@@ -438,7 +439,7 @@ final class RegistrySnapshot {
 			$relative = ltrim( substr( $file, strlen( wp_normalize_path( WP_PLUGIN_DIR ) ) ), '/' );
 			$parts    = explode( '/', $relative );
 
-			if ( ! empty( $parts[0] ) && 'plugin-conflict-debugger' !== $parts[0] ) {
+			if ( ! empty( $parts[0] ) && 'conflict-debugger' !== $parts[0] ) {
 				return sanitize_key( (string) $parts[0] );
 			}
 		}

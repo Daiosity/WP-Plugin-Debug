@@ -30,7 +30,7 @@ final class Assets {
 	 * @return void
 	 */
 	public function enqueue( string $hook_suffix ): void {
-		if ( 'tools_page_plugin-conflict-debugger' !== $hook_suffix ) {
+		if ( 'tools_page_conflict-debugger' !== $hook_suffix ) {
 			return;
 		}
 
@@ -53,19 +53,19 @@ final class Assets {
 			'pcd-admin',
 			'pcdAdmin',
 			array(
-				'scanningLabel' => __( 'Running scan...', 'plugin-conflict-debugger' ),
+				'scanningLabel' => __( 'Running scan...', 'conflict-debugger' ),
 				'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
 				'nonce'         => wp_create_nonce( 'pcd_scan_ajax' ),
 				'i18n'          => array(
-					'starting'     => __( 'Starting background scan...', 'plugin-conflict-debugger' ),
-					'error'        => __( 'Could not start the scan. Please try again.', 'plugin-conflict-debugger' ),
-					'failed'       => __( 'Scan failed. Please review server logs and try again.', 'plugin-conflict-debugger' ),
-					'completed'    => __( 'Scan complete. Refreshing results...', 'plugin-conflict-debugger' ),
-					'running'      => __( 'Scan is running in the background.', 'plugin-conflict-debugger' ),
-					'queued'       => __( 'Scan queued. Waiting for worker...', 'plugin-conflict-debugger' ),
-					'runScan'      => __( 'Run Scan', 'plugin-conflict-debugger' ),
-					'validationPairRequired'   => __( 'Choose at least one plugin before starting pair validation.', 'plugin-conflict-debugger' ),
-					'validationTargetRequired' => __( 'Enter the hook, asset handle, route, or action you want to validate.', 'plugin-conflict-debugger' ),
+					'starting'     => __( 'Starting background scan...', 'conflict-debugger' ),
+					'error'        => __( 'Could not start the scan. Please try again.', 'conflict-debugger' ),
+					'failed'       => __( 'Scan failed. Please review server logs and try again.', 'conflict-debugger' ),
+					'completed'    => __( 'Scan complete. Refreshing results...', 'conflict-debugger' ),
+					'running'      => __( 'Scan is running in the background.', 'conflict-debugger' ),
+					'queued'       => __( 'Scan queued. Waiting for worker...', 'conflict-debugger' ),
+					'runScan'      => __( 'Run Scan', 'conflict-debugger' ),
+					'validationPairRequired'   => __( 'Choose at least one plugin before starting pair validation.', 'conflict-debugger' ),
+					'validationTargetRequired' => __( 'Enter the hook, asset handle, route, or action you want to validate.', 'conflict-debugger' ),
 				),
 			)
 		);

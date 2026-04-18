@@ -293,7 +293,7 @@ final class TraceAnalyzer {
 		return array(
 			'signature'          => md5( $key ),
 			'trace_key'          => $key,
-			'request_context'    => sanitize_text_field( (string) ( $record['request_context'] ?? __( 'runtime', 'plugin-conflict-debugger' ) ) ),
+			'request_context'    => sanitize_text_field( (string) ( $record['request_context'] ?? __( 'runtime', 'conflict-debugger' ) ) ),
 			'request_uri'        => sanitize_text_field( (string) ( $record['request_uri'] ?? '/' ) ),
 			'request_scope'      => sanitize_text_field( (string) ( $record['request_scope'] ?? '' ) ),
 			'resource'           => sanitize_text_field( (string) ( $record['resource'] ?? '' ) ),
@@ -400,9 +400,9 @@ final class TraceAnalyzer {
 	private function build_comparison_explanation( array $primary, array $secondary ): string {
 		return sprintf(
 			/* translators: 1: primary label, 2: secondary label. */
-			__( 'This comparison highlights what changed between the most abnormal captured trace (%1$s) and the closest calmer trace (%2$s).', 'plugin-conflict-debugger' ),
-			(string) ( $primary['label'] ?? __( 'affected trace', 'plugin-conflict-debugger' ) ),
-			(string) ( $secondary['label'] ?? __( 'comparison trace', 'plugin-conflict-debugger' ) )
+			__( 'This comparison highlights what changed between the most abnormal captured trace (%1$s) and the closest calmer trace (%2$s).', 'conflict-debugger' ),
+			(string) ( $primary['label'] ?? __( 'affected trace', 'conflict-debugger' ) ),
+			(string) ( $secondary['label'] ?? __( 'comparison trace', 'conflict-debugger' ) )
 		);
 	}
 
@@ -413,7 +413,7 @@ final class TraceAnalyzer {
 	 * @return string
 	 */
 	private function build_trace_label( array $trace ): string {
-		$context  = sanitize_text_field( (string) ( $trace['request_context'] ?? __( 'runtime', 'plugin-conflict-debugger' ) ) );
+		$context  = sanitize_text_field( (string) ( $trace['request_context'] ?? __( 'runtime', 'conflict-debugger' ) ) );
 		$scope    = sanitize_text_field( (string) ( $trace['request_scope'] ?? '' ) );
 		$resource = sanitize_text_field( (string) ( $trace['resource'] ?? '' ) );
 		$uri      = sanitize_text_field( (string) ( $trace['request_uri'] ?? '' ) );
@@ -421,7 +421,7 @@ final class TraceAnalyzer {
 		if ( '' !== $resource ) {
 			return sprintf(
 				/* translators: 1: request context, 2: resource. */
-				__( '%1$s trace on %2$s', 'plugin-conflict-debugger' ),
+				__( '%1$s trace on %2$s', 'conflict-debugger' ),
 				$context,
 				$resource
 			);
@@ -430,7 +430,7 @@ final class TraceAnalyzer {
 		if ( '' !== $scope ) {
 			return sprintf(
 				/* translators: 1: request context, 2: request scope. */
-				__( '%1$s trace on %2$s', 'plugin-conflict-debugger' ),
+				__( '%1$s trace on %2$s', 'conflict-debugger' ),
 				$context,
 				$scope
 			);
@@ -439,7 +439,7 @@ final class TraceAnalyzer {
 		if ( '' !== $uri ) {
 			return sprintf(
 				/* translators: 1: request context, 2: request URI. */
-				__( '%1$s trace on %2$s', 'plugin-conflict-debugger' ),
+				__( '%1$s trace on %2$s', 'conflict-debugger' ),
 				$context,
 				$uri
 			);
@@ -447,7 +447,7 @@ final class TraceAnalyzer {
 
 		return sprintf(
 			/* translators: %s request context. */
-			__( '%s trace', 'plugin-conflict-debugger' ),
+			__( '%s trace', 'conflict-debugger' ),
 			$context
 		);
 	}
@@ -461,7 +461,7 @@ final class TraceAnalyzer {
 	private function build_trace_summary( array $trace ): string {
 		return sprintf(
 			/* translators: 1: requests, 2: events, 3: failures, 4: mutations. */
-			__( '%1$d requests, %2$d runtime events, %3$d observed failures, %4$d mutation signals.', 'plugin-conflict-debugger' ),
+			__( '%1$d requests, %2$d runtime events, %3$d observed failures, %4$d mutation signals.', 'conflict-debugger' ),
 			(int) ( $trace['request_count'] ?? 0 ),
 			(int) ( $trace['event_count'] ?? 0 ),
 			(int) ( $trace['failure_count'] ?? 0 ),

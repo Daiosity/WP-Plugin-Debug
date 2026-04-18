@@ -87,7 +87,7 @@ final class Notices {
 
 		$message = sprintf(
 			/* translators: 1: critical finding count, 2: scan date. */
-			__( 'Plugin Conflict Debugger found %1$d critical issue signal(s) in the latest scan (%2$s). Review the findings before changing plugin settings on production.', 'plugin-conflict-debugger' ),
+			__( 'Conflict Debugger found %1$d critical issue signal(s) in the latest scan (%2$s). Review the findings before changing plugin settings on production.', 'conflict-debugger' ),
 			$critical_count,
 			$scanned_at
 		);
@@ -95,8 +95,8 @@ final class Notices {
 		printf(
 			'<div class="notice notice-error"><p>%1$s <a href="%2$s">%3$s</a></p></div>',
 			esc_html( $message ),
-			esc_url( admin_url( 'tools.php?page=plugin-conflict-debugger' ) ),
-			esc_html__( 'Open dashboard', 'plugin-conflict-debugger' )
+			esc_url( admin_url( 'tools.php?page=conflict-debugger' ) ),
+			esc_html__( 'Open dashboard', 'conflict-debugger' )
 		);
 	}
 }

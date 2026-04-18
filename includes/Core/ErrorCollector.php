@@ -88,7 +88,7 @@ final class ErrorCollector {
 			$signals['entries'] = $this->read_recent_log_entries( $debug_log );
 		} else {
 			$signals['logs_unavailable'] = true;
-			$signals['notes'][]          = __( 'Direct log access is unavailable. Analysis is based on runtime and plugin interaction signals.', 'plugin-conflict-debugger' );
+			$signals['notes'][]          = __( 'Direct log access is unavailable. Analysis is based on runtime and plugin interaction signals.', 'conflict-debugger' );
 		}
 
 		$last_error = error_get_last();
@@ -108,7 +108,7 @@ final class ErrorCollector {
 
 		$recovery_mode = get_option( 'recovery_keys', array() );
 		if ( ! empty( $recovery_mode ) ) {
-			$signals['notes'][] = __( 'Recovery mode data exists, which may indicate a recent fatal error event.', 'plugin-conflict-debugger' );
+			$signals['notes'][] = __( 'Recovery mode data exists, which may indicate a recent fatal error event.', 'conflict-debugger' );
 		}
 
 		foreach ( $this->logger->get_entries() as $entry ) {
@@ -166,7 +166,7 @@ final class ErrorCollector {
 		}
 
 		if ( ! empty( $signals['request_contexts'] ) ) {
-			$signals['notes'][] = __( 'Recent request contexts were captured and included in this analysis.', 'plugin-conflict-debugger' );
+			$signals['notes'][] = __( 'Recent request contexts were captured and included in this analysis.', 'conflict-debugger' );
 		}
 
 		$signals['entries']             = $this->deduplicate_entries( $signals['entries'] );
@@ -174,7 +174,7 @@ final class ErrorCollector {
 		$signals['trace_summary_count'] = $this->count_trace_summary_entries( $signals['entries'] );
 
 		if ( $signals['trace_summary_count'] > 0 ) {
-			$signals['notes'][] = __( 'Trace-level mutation warnings were captured separately from PHP, log, and request error signals.', 'plugin-conflict-debugger' );
+			$signals['notes'][] = __( 'Trace-level mutation warnings were captured separately from PHP, log, and request error signals.', 'conflict-debugger' );
 		}
 
 		return $signals;
@@ -192,31 +192,31 @@ final class ErrorCollector {
 		$open_basedir     = (string) ini_get( 'open_basedir' );
 		$path_exists      = '' !== (string) $path && file_exists( (string) $path );
 		$path_readable    = '' !== (string) $path && is_readable( (string) $path );
-		$path_writable    = '' !== (string) $path && ( $path_exists ? is_writable( (string) $path ) : is_writable( dirname( (string) $path ) ) );
+		$path_writable    = '' !== (string) $path && ( $path_exists ? wp_is_writable( (string) $path ) : wp_is_writable( dirname( (string) $path ) ) );
 		$status           = 'available';
-		$status_message   = __( 'Debug log is enabled and readable.', 'plugin-conflict-debugger' );
+		$status_message   = __( 'Debug log is enabled and readable.', 'conflict-debugger' );
 		$recommendations  = array();
 
 		if ( ! $wp_debug_log ) {
 			$status         = 'disabled';
-			$status_message = __( 'WP_DEBUG_LOG is disabled, so WordPress is not writing a direct debug log for this plugin to read.', 'plugin-conflict-debugger' );
-			$recommendations[] = __( 'Enable WP_DEBUG_LOG in wp-config.php to create a readable WordPress debug log.', 'plugin-conflict-debugger' );
+			$status_message = __( 'WP_DEBUG_LOG is disabled, so WordPress is not writing a direct debug log for this plugin to read.', 'conflict-debugger' );
+			$recommendations[] = __( 'Enable WP_DEBUG_LOG in wp-config.php to create a readable WordPress debug log.', 'conflict-debugger' );
 		} elseif ( '' === (string) $path ) {
 			$status         = 'unresolved';
-			$status_message = __( 'The debug log path could not be resolved from the current WordPress configuration.', 'plugin-conflict-debugger' );
-			$recommendations[] = __( 'Check whether WP_DEBUG_LOG points to a valid file path or boolean true.', 'plugin-conflict-debugger' );
+			$status_message = __( 'The debug log path could not be resolved from the current WordPress configuration.', 'conflict-debugger' );
+			$recommendations[] = __( 'Check whether WP_DEBUG_LOG points to a valid file path or boolean true.', 'conflict-debugger' );
 		} elseif ( ! $path_exists ) {
 			$status         = 'missing';
-			$status_message = __( 'Debug logging is enabled, but the log file does not exist yet.', 'plugin-conflict-debugger' );
-			$recommendations[] = __( 'Trigger a PHP notice or warning in staging, or verify that the web server can create the log file.', 'plugin-conflict-debugger' );
+			$status_message = __( 'Debug logging is enabled, but the log file does not exist yet.', 'conflict-debugger' );
+			$recommendations[] = __( 'Trigger a PHP notice or warning in staging, or verify that the web server can create the log file.', 'conflict-debugger' );
 		} elseif ( ! $path_readable ) {
 			$status         = 'unreadable';
-			$status_message = __( 'The debug log exists but is not readable by the current PHP process.', 'plugin-conflict-debugger' );
-			$recommendations[] = __( 'Check file ownership, permissions, and any open_basedir restrictions on the server.', 'plugin-conflict-debugger' );
+			$status_message = __( 'The debug log exists but is not readable by the current PHP process.', 'conflict-debugger' );
+			$recommendations[] = __( 'Check file ownership, permissions, and any open_basedir restrictions on the server.', 'conflict-debugger' );
 		}
 
 		if ( '' !== $open_basedir ) {
-			$recommendations[] = __( 'This server reports open_basedir restrictions. If the log path falls outside that scope, PHP may not be able to read it.', 'plugin-conflict-debugger' );
+			$recommendations[] = __( 'This server reports open_basedir restrictions. If the log path falls outside that scope, PHP may not be able to read it.', 'conflict-debugger' );
 		}
 
 		return array(
@@ -312,7 +312,7 @@ final class ErrorCollector {
 
 			$entry['message'] = sprintf(
 				/* translators: 1: repeat count, 2: message text. */
-				__( 'Repeated %1$d times: %2$s', 'plugin-conflict-debugger' ),
+				__( 'Repeated %1$d times: %2$s', 'conflict-debugger' ),
 				$repeat_count,
 				(string) ( $entry['message'] ?? '' )
 			);

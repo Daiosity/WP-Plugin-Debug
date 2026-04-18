@@ -120,7 +120,7 @@ final class ConflictDetector {
 						)
 					);
 					$observed_entry        = ! empty( $pair_specific_entries ) ? $pair_specific_entries[0] : $error_match[0];
-					$observed_context      = sanitize_text_field( (string) ( $observed_entry['request_context'] ?? __( 'runtime', 'plugin-conflict-debugger' ) ) );
+					$observed_context      = sanitize_text_field( (string) ( $observed_entry['request_context'] ?? __( 'runtime', 'conflict-debugger' ) ) );
 					$observed_resource     = $this->summarize_observed_resource( $observed_entry );
 					$execution_surface     = $this->execution_surface_for_entry( $observed_entry );
 					$runtime_signal_type   = sanitize_key( (string) ( $observed_entry['runtime_signal_type'] ?? 'generic_runtime_noise' ) );
@@ -132,7 +132,7 @@ final class ConflictDetector {
 						'pair_specific_runtime_breakage' === $runtime_signal_type ? 'strong' : 'context',
 						array(
 							'tier'              => 'pair_specific_runtime_breakage' === $runtime_signal_type ? 'runtime_breakage' : 'supporting',
-							'request_context'   => '' !== $observed_context ? $observed_context : __( 'runtime', 'plugin-conflict-debugger' ),
+							'request_context'   => '' !== $observed_context ? $observed_context : __( 'runtime', 'conflict-debugger' ),
 							'shared_resource'   => 'pair_specific_runtime_breakage' === $runtime_signal_type ? $observed_resource : '',
 							'execution_surface' => $execution_surface,
 							'pair_specific'     => ! empty( $observed_entry['pair_specific'] ),
@@ -146,11 +146,11 @@ final class ConflictDetector {
 						$global_evidence[] = $this->create_evidence_item(
 							'generic',
 							'third_party_contamination',
-							__( 'The runtime clue includes third-party screen or resource context, so it was treated as contaminated support instead of direct pair-specific proof.', 'plugin-conflict-debugger' ),
+							__( 'The runtime clue includes third-party screen or resource context, so it was treated as contaminated support instead of direct pair-specific proof.', 'conflict-debugger' ),
 							'weak',
 							array(
 								'tier'              => 'noise',
-								'request_context'   => '' !== $observed_context ? $observed_context : __( 'runtime', 'plugin-conflict-debugger' ),
+								'request_context'   => '' !== $observed_context ? $observed_context : __( 'runtime', 'conflict-debugger' ),
 								'execution_surface' => $execution_surface,
 								'contaminated'      => true,
 							)
@@ -162,11 +162,11 @@ final class ConflictDetector {
 					$global_evidence[] = $this->create_evidence_item(
 						'generic',
 						'recent_change',
-						__( 'One or both plugins changed recently. That can help narrow the timeline, but it is not proof of a conflict by itself.', 'plugin-conflict-debugger' ),
+						__( 'One or both plugins changed recently. That can help narrow the timeline, but it is not proof of a conflict by itself.', 'conflict-debugger' ),
 						'weak',
 						array(
 							'tier'            => 'weak',
-							'request_context' => __( 'runtime', 'plugin-conflict-debugger' ),
+							'request_context' => __( 'runtime', 'conflict-debugger' ),
 						)
 					);
 				}
@@ -179,7 +179,7 @@ final class ConflictDetector {
 						'weak',
 						array(
 							'tier'            => 'weak',
-							'request_context' => __( 'runtime', 'plugin-conflict-debugger' ),
+							'request_context' => __( 'runtime', 'conflict-debugger' ),
 						)
 					);
 				}
@@ -278,7 +278,7 @@ final class ConflictDetector {
 					'issue_category'                    => $best_surface_key,
 					'surface_key'                       => $best_surface_key,
 					'surface_label'                     => (string) ( $surface_meta['label'] ?? $best_surface_key ),
-					'affected_area'                     => (string) ( $surface_meta['affected_area'] ?? __( 'generic site behavior', 'plugin-conflict-debugger' ) ),
+					'affected_area'                     => (string) ( $surface_meta['affected_area'] ?? __( 'generic site behavior', 'conflict-debugger' ) ),
 					'title'                             => $this->build_title( $plugin_a, $plugin_b, $best_category, $best_surface_key, $shared_resource, $request_context ),
 					'severity'                          => $best_severity,
 					'status'                            => $this->heuristics->ui_status_for( $best_severity ),
@@ -333,8 +333,8 @@ final class ConflictDetector {
 	private function get_surface_definitions(): array {
 		return array(
 			'frontend_rendering' => array(
-				'label'         => __( 'Frontend Rendering', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'frontend rendering', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Frontend Rendering', 'conflict-debugger' ),
+				'affected_area' => __( 'frontend rendering', 'conflict-debugger' ),
 				'signal_key'    => 'output_filter_overlap',
 				'hooks'         => array( 'the_content', 'template_redirect', 'template_include', 'render_block', 'pre_do_shortcode_tag', 'do_shortcode_tag', 'wp_head', 'wp_footer' ),
 				'hook_prefixes' => array(),
@@ -342,8 +342,8 @@ final class ConflictDetector {
 				'context_terms' => array( 'shortcode', 'template', 'render', 'content', 'header', 'footer', 'wrapper' ),
 			),
 			'asset_loading' => array(
-				'label'         => __( 'Asset Loading', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'asset loading', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Asset Loading', 'conflict-debugger' ),
+				'affected_area' => __( 'asset loading', 'conflict-debugger' ),
 				'signal_key'    => 'surface_hook_overlap',
 				'hooks'         => array( 'wp_enqueue_scripts', 'wp_print_scripts', 'wp_print_styles', 'script_loader_tag', 'style_loader_tag', 'wp_default_scripts', 'wp_default_styles' ),
 				'hook_prefixes' => array(),
@@ -351,20 +351,22 @@ final class ConflictDetector {
 				'context_terms' => array( 'script', 'style', 'asset', 'dependency', 'enqueue', 'lazy', 'defer', 'delay' ),
 			),
 			'admin_screen' => array(
-				'label'         => __( 'Admin Screen', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'admin settings', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Admin Screen', 'conflict-debugger' ),
+				'affected_area' => __( 'admin settings', 'conflict-debugger' ),
 				'signal_key'    => 'admin_screen_overlap',
 				'hooks'         => array( 'admin_menu', 'admin_init', 'current_screen', 'admin_enqueue_scripts' ),
 				'hook_prefixes' => array(
-					array( 'prefix' => 'load-', 'signal_key' => 'admin_screen_overlap', 'template' => __( 'Both plugins attach to the same admin page load hook: %s.', 'plugin-conflict-debugger' ) ),
-					array( 'prefix' => 'admin_post_', 'signal_key' => 'admin_screen_overlap', 'template' => __( 'Both plugins attach to the same admin save or postback action: %s.', 'plugin-conflict-debugger' ) ),
+					/* translators: %s: admin page load hook name. */
+					array( 'prefix' => 'load-', 'signal_key' => 'admin_screen_overlap', 'template' => __( 'Both plugins attach to the same admin page load hook: %s.', 'conflict-debugger' ) ),
+					/* translators: %s: admin postback hook name. */
+					array( 'prefix' => 'admin_post_', 'signal_key' => 'admin_screen_overlap', 'template' => __( 'Both plugins attach to the same admin save or postback action: %s.', 'conflict-debugger' ) ),
 				),
 				'categories'    => array( 'admin-tools' ),
 				'context_terms' => array( 'settings', 'admin', 'options', 'screen', 'save settings', 'tools page', 'menu slug' ),
 			),
 			'editor' => array(
-				'label'         => __( 'Editor', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'editor', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Editor', 'conflict-debugger' ),
+				'affected_area' => __( 'editor', 'conflict-debugger' ),
 				'signal_key'    => 'editor_overlap',
 				'hooks'         => array( 'enqueue_block_editor_assets', 'add_meta_boxes', 'save_post', 'quicktags_settings', 'mce_buttons', 'block_editor_settings_all', 'use_block_editor_for_post' ),
 				'hook_prefixes' => array(),
@@ -372,8 +374,8 @@ final class ConflictDetector {
 				'context_terms' => array( 'editor', 'block', 'metabox', 'classic editor', 'serialization', 'gutenberg' ),
 			),
 			'authentication_account' => array(
-				'label'         => __( 'Authentication / Account', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'login', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Authentication / Account', 'conflict-debugger' ),
+				'affected_area' => __( 'login', 'conflict-debugger' ),
 				'signal_key'    => 'auth_overlap',
 				'hooks'         => array( 'login_init', 'authenticate', 'login_redirect', 'registration_redirect', 'register_post', 'user_register', 'profile_update', 'set_auth_cookie' ),
 				'hook_prefixes' => array(),
@@ -381,31 +383,34 @@ final class ConflictDetector {
 				'context_terms' => array( 'login', 'register', 'profile', 'session', 'mfa', 'redirect', 'auth' ),
 			),
 			'rest_api_ajax' => array(
-				'label'         => __( 'REST API / AJAX', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'API/AJAX', 'plugin-conflict-debugger' ),
+				'label'         => __( 'REST API / AJAX', 'conflict-debugger' ),
+				'affected_area' => __( 'API/AJAX', 'conflict-debugger' ),
 				'signal_key'    => 'surface_hook_overlap',
 				'hooks'         => array( 'rest_api_init' ),
 				'hook_prefixes' => array(
-					array( 'prefix' => 'wp_ajax_', 'signal_key' => 'ajax_action_overlap', 'template' => __( 'Both plugins register the same authenticated AJAX action: %s.', 'plugin-conflict-debugger' ) ),
-					array( 'prefix' => 'wp_ajax_nopriv_', 'signal_key' => 'ajax_action_overlap', 'template' => __( 'Both plugins register the same public AJAX action: %s.', 'plugin-conflict-debugger' ) ),
+					/* translators: %s: authenticated AJAX action name. */
+					array( 'prefix' => 'wp_ajax_', 'signal_key' => 'ajax_action_overlap', 'template' => __( 'Both plugins register the same authenticated AJAX action: %s.', 'conflict-debugger' ) ),
+					/* translators: %s: public AJAX action name. */
+					array( 'prefix' => 'wp_ajax_nopriv_', 'signal_key' => 'ajax_action_overlap', 'template' => __( 'Both plugins register the same public AJAX action: %s.', 'conflict-debugger' ) ),
 				),
 				'categories'    => array( 'api' ),
 				'context_terms' => array( 'rest', 'ajax', 'nonce', 'endpoint', 'api', 'request' ),
 			),
 			'forms_submission' => array(
-				'label'         => __( 'Forms / Submission Workflows', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'forms', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Forms / Submission Workflows', 'conflict-debugger' ),
+				'affected_area' => __( 'forms', 'conflict-debugger' ),
 				'signal_key'    => 'surface_hook_overlap',
 				'hooks'         => array( 'template_redirect', 'init' ),
 				'hook_prefixes' => array(
-					array( 'prefix' => 'admin_post_', 'signal_key' => 'exact_hook_collision', 'template' => __( 'Both plugins appear to process the same submit/postback action: %s.', 'plugin-conflict-debugger' ) ),
+					/* translators: %s: admin postback hook name. */
+					array( 'prefix' => 'admin_post_', 'signal_key' => 'exact_hook_collision', 'template' => __( 'Both plugins appear to process the same submit/postback action: %s.', 'conflict-debugger' ) ),
 				),
 				'categories'    => array( 'forms' ),
 				'context_terms' => array( 'form', 'submit', 'validation', 'captcha', 'spam', 'processing' ),
 			),
 			'caching_optimization' => array(
-				'label'         => __( 'Caching / Optimization', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'caching', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Caching / Optimization', 'conflict-debugger' ),
+				'affected_area' => __( 'caching', 'conflict-debugger' ),
 				'signal_key'    => 'optimization_stack_overlap',
 				'hooks'         => array( 'template_redirect', 'shutdown', 'script_loader_tag', 'style_loader_tag' ),
 				'hook_prefixes' => array(),
@@ -413,8 +418,8 @@ final class ConflictDetector {
 				'context_terms' => array( 'cache', 'minify', 'defer', 'delay', 'lazy', 'buffer', 'optimization' ),
 			),
 			'seo_metadata' => array(
-				'label'         => __( 'SEO / Metadata', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'SEO', 'plugin-conflict-debugger' ),
+				'label'         => __( 'SEO / Metadata', 'conflict-debugger' ),
+				'affected_area' => __( 'SEO', 'conflict-debugger' ),
 				'signal_key'    => 'seo_overlap',
 				'hooks'         => array( 'wp_head', 'pre_get_document_title', 'document_title_parts', 'wp_sitemaps_init', 'do_robots', 'redirect_canonical' ),
 				'hook_prefixes' => array(),
@@ -422,8 +427,8 @@ final class ConflictDetector {
 				'context_terms' => array( 'meta', 'schema', 'canonical', 'robots', 'sitemap', 'og:' ),
 			),
 			'rewrite_routing' => array(
-				'label'         => __( 'Rewrite / Routing', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'routing', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Rewrite / Routing', 'conflict-debugger' ),
+				'affected_area' => __( 'routing', 'conflict-debugger' ),
 				'signal_key'    => 'routing_overlap',
 				'hooks'         => array( 'init', 'parse_request', 'request', 'query_vars', 'template_include', 'rewrite_rules_array' ),
 				'hook_prefixes' => array(),
@@ -431,8 +436,8 @@ final class ConflictDetector {
 				'context_terms' => array( 'rewrite', 'route', 'endpoint', 'permalink', 'query var', 'template routing' ),
 			),
 			'content_model' => array(
-				'label'         => __( 'Content Model', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'content model', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Content Model', 'conflict-debugger' ),
+				'affected_area' => __( 'content model', 'conflict-debugger' ),
 				'signal_key'    => 'content_model_overlap',
 				'hooks'         => array( 'init', 'registered_post_type', 'registered_taxonomy' ),
 				'hook_prefixes' => array(),
@@ -440,8 +445,8 @@ final class ConflictDetector {
 				'context_terms' => array( 'post type', 'taxonomy', 'custom post', 'cpt', 'rewrite slug', 'content model' ),
 			),
 			'email_notifications' => array(
-				'label'         => __( 'Email / Notifications', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'notifications', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Email / Notifications', 'conflict-debugger' ),
+				'affected_area' => __( 'notifications', 'conflict-debugger' ),
 				'signal_key'    => 'email_overlap',
 				'hooks'         => array( 'phpmailer_init', 'wp_mail', 'transition_post_status', 'comment_post' ),
 				'hook_prefixes' => array(),
@@ -449,8 +454,8 @@ final class ConflictDetector {
 				'context_terms' => array( 'mail', 'email', 'smtp', 'notification', 'delivery' ),
 			),
 			'security_access' => array(
-				'label'         => __( 'Security / Access Control', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'security', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Security / Access Control', 'conflict-debugger' ),
+				'affected_area' => __( 'security', 'conflict-debugger' ),
 				'signal_key'    => 'security_overlap',
 				'hooks'         => array( 'authenticate', 'rest_authentication_errors', 'login_init', 'admin_init', 'template_redirect' ),
 				'hook_prefixes' => array(),
@@ -458,8 +463,8 @@ final class ConflictDetector {
 				'context_terms' => array( 'firewall', 'blocked', 'permission', 'capability', 'access denied', 'lockout' ),
 			),
 			'background_processing' => array(
-				'label'         => __( 'Cron / Background Jobs', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'background processing', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Cron / Background Jobs', 'conflict-debugger' ),
+				'affected_area' => __( 'background processing', 'conflict-debugger' ),
 				'signal_key'    => 'background_overlap',
 				'hooks'         => array( 'shutdown' ),
 				'hook_prefixes' => array(),
@@ -467,8 +472,8 @@ final class ConflictDetector {
 				'context_terms' => array( 'cron', 'queue', 'background', 'scheduled', 'job', 'worker' ),
 			),
 			'commerce_checkout' => array(
-				'label'         => __( 'Commerce / Checkout', 'plugin-conflict-debugger' ),
-				'affected_area' => __( 'forms', 'plugin-conflict-debugger' ),
+				'label'         => __( 'Commerce / Checkout', 'conflict-debugger' ),
+				'affected_area' => __( 'forms', 'conflict-debugger' ),
 				'signal_key'    => 'surface_hook_overlap',
 				'hooks'         => array( 'woocommerce_before_calculate_totals', 'woocommerce_checkout_process', 'woocommerce_cart_loaded_from_session' ),
 				'hook_prefixes' => array(),
@@ -492,6 +497,8 @@ final class ConflictDetector {
 
 		$results   = array();
 		$hook_keys = array_keys( (array) $wp_filter );
+		/* translators: %s: WordPress hook name. */
+		$default_surface_template = __( 'Both plugins attach to the %s hook.', 'conflict-debugger' );
 
 		foreach ( $this->surfaces as $surface_key => $surface ) {
 			$matched_hooks = array();
@@ -501,7 +508,7 @@ final class ConflictDetector {
 					$matched_hooks[] = array(
 						'name'       => (string) $hook_name,
 						'signal_key' => 'surface_hook_overlap',
-						'template'   => __( 'Both plugins attach to the %s hook.', 'plugin-conflict-debugger' ),
+						'template'   => $default_surface_template,
 						'dynamic'    => false,
 					);
 				}
@@ -509,7 +516,7 @@ final class ConflictDetector {
 
 			foreach ( (array) $surface['hook_prefixes'] as $prefix_config ) {
 				$prefix   = (string) ( $prefix_config['prefix'] ?? '' );
-				$template = (string) ( $prefix_config['template'] ?? __( 'Both plugins attach to the %s hook.', 'plugin-conflict-debugger' ) );
+				$template = (string) ( $prefix_config['template'] ?? $default_surface_template );
 				$signal   = (string) ( $prefix_config['signal_key'] ?? $surface['signal_key'] );
 
 				foreach ( $hook_keys as $hook_name ) {
@@ -591,7 +598,7 @@ final class ConflictDetector {
 								$pair_key,
 								(string) $surface_key,
 								'extreme_priority',
-								__( 'One or more callbacks on this surface run at extreme priorities, which can change load order in hard-to-debug ways.', 'plugin-conflict-debugger' ),
+								__( 'One or more callbacks on this surface run at extreme priorities, which can change load order in hard-to-debug ways.', 'conflict-debugger' ),
 								'weak',
 								array(
 									'tier'              => 'noise',
@@ -658,7 +665,7 @@ final class ConflictDetector {
 						'duplicate_assets',
 						sprintf(
 							/* translators: %s library family. */
-							__( 'Both plugins register assets from the same library family: %s.', 'plugin-conflict-debugger' ),
+							__( 'Both plugins register assets from the same library family: %s.', 'conflict-debugger' ),
 							$family
 						),
 						'contextual',
@@ -683,7 +690,7 @@ final class ConflictDetector {
 						'optimization_stack_overlap',
 						sprintf(
 							/* translators: %s optimization family. */
-							__( 'Both plugins appear to modify the same optimization layer: %s.', 'plugin-conflict-debugger' ),
+							__( 'Both plugins appear to modify the same optimization layer: %s.', 'conflict-debugger' ),
 							$flag
 						),
 						'contextual',
@@ -738,7 +745,7 @@ final class ConflictDetector {
 						'rest_route_overlap',
 						sprintf(
 							/* translators: %s REST route. */
-							__( 'Both plugins register callbacks against the same REST route family: %s.', 'plugin-conflict-debugger' ),
+							__( 'Both plugins register callbacks against the same REST route family: %s.', 'conflict-debugger' ),
 							$route
 						),
 						'concrete',
@@ -793,7 +800,7 @@ final class ConflictDetector {
 					continue;
 				}
 
-				$family_name = __( 'scheduled processing', 'plugin-conflict-debugger' );
+				$family_name = __( 'scheduled processing', 'conflict-debugger' );
 				foreach ( $families as $family ) {
 					if ( false !== strpos( strtolower( (string) $hook_name ), $family ) ) {
 						$family_name = $family;
@@ -812,7 +819,7 @@ final class ConflictDetector {
 							'cron_overlap',
 							sprintf(
 								/* translators: 1: cron hook, 2: family. */
-								__( 'Both plugins appear to schedule similar background work around %1$s (%2$s).', 'plugin-conflict-debugger' ),
+								__( 'Both plugins appear to schedule similar background work around %1$s (%2$s).', 'conflict-debugger' ),
 								$hook_name,
 								$family_name
 							),
@@ -853,7 +860,7 @@ final class ConflictDetector {
 				(string) $post_type,
 				sprintf(
 					/* translators: %s post type key. */
-					__( 'Both plugins register the same custom post type key: %s.', 'plugin-conflict-debugger' ),
+					__( 'Both plugins register the same custom post type key: %s.', 'conflict-debugger' ),
 					$post_type
 				)
 			);
@@ -880,7 +887,7 @@ final class ConflictDetector {
 				(string) $taxonomy,
 				sprintf(
 					/* translators: %s taxonomy key. */
-					__( 'Both plugins register the same taxonomy key: %s.', 'plugin-conflict-debugger' ),
+					__( 'Both plugins register the same taxonomy key: %s.', 'conflict-debugger' ),
 					$taxonomy
 				)
 			);
@@ -907,7 +914,7 @@ final class ConflictDetector {
 				(string) $rewrite_slug,
 				sprintf(
 					/* translators: %s rewrite slug. */
-					__( 'Both plugins register the same rewrite slug: %s.', 'plugin-conflict-debugger' ),
+					__( 'Both plugins register the same rewrite slug: %s.', 'conflict-debugger' ),
 					$rewrite_slug
 				)
 			);
@@ -922,7 +929,7 @@ final class ConflictDetector {
 				(string) $rest_base,
 				sprintf(
 					/* translators: %s REST base. */
-					__( 'Both plugins expose the same REST base or API content base: %s.', 'plugin-conflict-debugger' ),
+					__( 'Both plugins expose the same REST base or API content base: %s.', 'conflict-debugger' ),
 					$rest_base
 				)
 			);
@@ -937,7 +944,7 @@ final class ConflictDetector {
 				(string) $query_var,
 				sprintf(
 					/* translators: %s query var. */
-					__( 'Both plugins rely on the same query var: %s.', 'plugin-conflict-debugger' ),
+					__( 'Both plugins rely on the same query var: %s.', 'conflict-debugger' ),
 					$query_var
 				)
 			);
@@ -961,7 +968,7 @@ final class ConflictDetector {
 				(string) $menu_slug,
 				sprintf(
 					/* translators: %s menu slug. */
-					__( 'Both plugins register the same admin menu or page slug: %s.', 'plugin-conflict-debugger' ),
+					__( 'Both plugins register the same admin menu or page slug: %s.', 'conflict-debugger' ),
 					$menu_slug
 				)
 			);
@@ -1037,7 +1044,7 @@ final class ConflictDetector {
 						$this->build_pair_key( $owner_slugs[ $i ], $owner_slugs[ $j ] ),
 						$surface_key,
 						$signal_key,
-						'' !== $message ? $message : __( 'Observed runtime callback or asset mutation involving both plugins.', 'plugin-conflict-debugger' ),
+						'' !== $message ? $message : __( 'Observed runtime callback or asset mutation involving both plugins.', 'conflict-debugger' ),
 						$strength,
 						array(
 							'tier'            => $tier,
@@ -1139,7 +1146,7 @@ final class ConflictDetector {
 				'surface_category_match',
 				sprintf(
 					/* translators: 1: plugin name, 2: plugin name, 3: surface label. */
-					__( '%1$s and %2$s both operate in the %3$s surface.', 'plugin-conflict-debugger' ),
+					__( '%1$s and %2$s both operate in the %3$s surface.', 'conflict-debugger' ),
 					(string) $plugin_a['name'],
 					(string) $plugin_b['name'],
 					(string) $surface['label']
@@ -1203,7 +1210,7 @@ final class ConflictDetector {
 				'surface_context_match',
 				sprintf(
 					/* translators: 1: surface label, 2: matched terms. */
-					__( 'Runtime clues align with the %1$s surface (%2$s).', 'plugin-conflict-debugger' ),
+					__( 'Runtime clues align with the %1$s surface (%2$s).', 'conflict-debugger' ),
 					(string) $surface['label'],
 					implode( ', ', array_slice( array_unique( $matched_terms ), 0, 4 ) )
 				),
@@ -1236,7 +1243,7 @@ final class ConflictDetector {
 		if ( ( $has_dependency_keywords && $mentions_other ) || ( $has_dependency_keywords && $shared_prefix ) ) {
 			return array(
 				'is_extension' => true,
-				'message'      => __( 'These plugins look like a parent/addon pair. Shared hooks and categories may be expected unless stronger runtime signals also correlate.', 'plugin-conflict-debugger' ),
+				'message'      => __( 'These plugins look like a parent/addon pair. Shared hooks and categories may be expected unless stronger runtime signals also correlate.', 'conflict-debugger' ),
 			);
 		}
 
@@ -1347,7 +1354,7 @@ final class ConflictDetector {
 	 * @return string
 	 */
 	private function format_observed_breakage_message( array $entry ): string {
-		$request_context = sanitize_text_field( (string) ( $entry['request_context'] ?? __( 'runtime', 'plugin-conflict-debugger' ) ) );
+		$request_context = sanitize_text_field( (string) ( $entry['request_context'] ?? __( 'runtime', 'conflict-debugger' ) ) );
 		$resource        = $this->summarize_observed_resource( $entry );
 		$execution_surface = $this->execution_surface_for_entry( $entry );
 		$message         = sanitize_textarea_field( (string) ( $entry['message'] ?? '' ) );
@@ -1357,16 +1364,16 @@ final class ConflictDetector {
 		if ( 'generic_runtime_noise' === $signal_type ) {
 			return sprintf(
 				/* translators: 1: request context, 2: execution surface. */
-				__( 'Supporting runtime noise was observed in the %1$s context around %2$s, but the failing path was not proven to be pair-specific.', 'plugin-conflict-debugger' ),
+				__( 'Supporting runtime noise was observed in the %1$s context around %2$s, but the failing path was not proven to be pair-specific.', 'conflict-debugger' ),
 				$request_context,
-				'' !== $execution_surface ? $execution_surface : __( 'the active execution path', 'plugin-conflict-debugger' )
+				'' !== $execution_surface ? $execution_surface : __( 'the active execution path', 'conflict-debugger' )
 			);
 		}
 
 		if ( $status_code >= 400 ) {
 			return sprintf(
 				/* translators: 1: request context, 2: status code. */
-				__( 'Observed %2$d response in the %1$s context during runtime telemetry.', 'plugin-conflict-debugger' ),
+				__( 'Observed %2$d response in the %1$s context during runtime telemetry.', 'conflict-debugger' ),
 				$request_context,
 				$status_code
 			);
@@ -1375,16 +1382,16 @@ final class ConflictDetector {
 		if ( '' !== $resource ) {
 			return sprintf(
 				/* translators: 1: request context, 2: shared resource, 3: execution surface. */
-				__( 'Observed breakage in the %1$s context involving %2$s on %3$s.', 'plugin-conflict-debugger' ),
+				__( 'Observed breakage in the %1$s context involving %2$s on %3$s.', 'conflict-debugger' ),
 				$request_context,
 				$resource,
-				'' !== $execution_surface ? $execution_surface : __( 'the active execution path', 'plugin-conflict-debugger' )
+				'' !== $execution_surface ? $execution_surface : __( 'the active execution path', 'conflict-debugger' )
 			);
 		}
 
 		return sprintf(
 			/* translators: 1: request context, 2: message excerpt. */
-			__( 'Observed breakage in the %1$s context: %2$s', 'plugin-conflict-debugger' ),
+			__( 'Observed breakage in the %1$s context: %2$s', 'conflict-debugger' ),
 			$request_context,
 			wp_trim_words( $message, 18, '...' )
 		);
@@ -2152,7 +2159,7 @@ final class ConflictDetector {
 				$counterpart_names[] = (string) ( $plugin_index[ $counterpart_slug ]['name'] ?? $counterpart_slug );
 			}
 
-			$request_context   = sanitize_text_field( (string) ( $sample_entry['request_context'] ?? __( 'runtime', 'plugin-conflict-debugger' ) ) );
+			$request_context   = sanitize_text_field( (string) ( $sample_entry['request_context'] ?? __( 'runtime', 'conflict-debugger' ) ) );
 			$execution_surface = $this->execution_surface_for_entry( $sample_entry );
 			$surface_key       = $this->surface_for_context( $request_context );
 			$finding_type      = ! empty( $pattern_group['is_observer'] ) ? 'observer_artifact' : 'global_anomaly';
@@ -2166,7 +2173,7 @@ final class ConflictDetector {
 					! empty( $pattern_group['is_observer'] ) ? 'repeated_observer_pattern' : 'global_anomaly_pattern',
 					sprintf(
 						/* translators: 1: plugin name, 2: count. */
-						__( '%1$s shows the same callback-chain churn pattern against %2$d different plugins.', 'plugin-conflict-debugger' ),
+						__( '%1$s shows the same callback-chain churn pattern against %2$d different plugins.', 'conflict-debugger' ),
 						(string) ( $anchor_plugin['name'] ?? $anchor_slug ),
 						count( $counterpart_slugs )
 					),
@@ -2182,7 +2189,7 @@ final class ConflictDetector {
 				$this->create_evidence_item(
 					$surface_key,
 					'callback_chain_churn',
-					__( 'The repeated fingerprint is based on callback presence differences across snapshots, which can happen with conditional or observer-driven lifecycle behavior.', 'plugin-conflict-debugger' ),
+					__( 'The repeated fingerprint is based on callback presence differences across snapshots, which can happen with conditional or observer-driven lifecycle behavior.', 'conflict-debugger' ),
 					'context',
 					array(
 						'tier'              => 'contextual',
@@ -2199,20 +2206,20 @@ final class ConflictDetector {
 				'secondary_plugin'                 => '',
 				'secondary_plugin_name'            => sprintf(
 					/* translators: %d count. */
-					__( 'Multiple plugins (%d)', 'plugin-conflict-debugger' ),
+					__( 'Multiple plugins (%d)', 'conflict-debugger' ),
 					count( $counterpart_slugs )
 				),
 				'issue_category'                   => $surface_key,
 				'surface_key'                      => $surface_key,
 				'surface_label'                    => (string) ( $this->surfaces[ $surface_key ]['label'] ?? $surface_key ),
-				'affected_area'                    => (string) ( $this->surfaces[ $surface_key ]['affected_area'] ?? __( 'runtime', 'plugin-conflict-debugger' ) ),
+				'affected_area'                    => (string) ( $this->surfaces[ $surface_key ]['affected_area'] ?? __( 'runtime', 'conflict-debugger' ) ),
 				'title'                            => ! empty( $pattern_group['is_observer'] )
 					? sprintf(
 						/* translators: %s plugin name. */
-						__( 'Recurring runtime anomaly involving %s', 'plugin-conflict-debugger' ),
+						__( 'Recurring runtime anomaly involving %s', 'conflict-debugger' ),
 						(string) ( $anchor_plugin['name'] ?? $anchor_slug )
 					)
-					: __( 'Repeated callback-chain interference pattern detected', 'plugin-conflict-debugger' ),
+					: __( 'Repeated callback-chain interference pattern detected', 'conflict-debugger' ),
 				'severity'                         => $severity,
 				'status'                           => $this->heuristics->ui_status_for( $severity ),
 				'confidence'                       => $confidence,
@@ -2227,26 +2234,26 @@ final class ConflictDetector {
 				'explanation'                      => ! empty( $pattern_group['is_observer'] )
 					? sprintf(
 						/* translators: 1: plugin name, 2: request context, 3: execution surface. */
-						__( '%1$s appears in the same callback-chain churn pattern across multiple unrelated plugins in the %2$s context on %3$s. That is more consistent with observer-plugin callback churn or snapshot timing noise than a uniquely confirmed pairwise conflict.', 'plugin-conflict-debugger' ),
+						__( '%1$s appears in the same callback-chain churn pattern across multiple unrelated plugins in the %2$s context on %3$s. That is more consistent with observer-plugin callback churn or snapshot timing noise than a uniquely confirmed pairwise conflict.', 'conflict-debugger' ),
 						(string) ( $anchor_plugin['name'] ?? $anchor_slug ),
 						$request_context,
-						'' !== $execution_surface ? $execution_surface : __( 'the active execution path', 'plugin-conflict-debugger' )
+						'' !== $execution_surface ? $execution_surface : __( 'the active execution path', 'conflict-debugger' )
 					)
 					: sprintf(
 						/* translators: 1: request context, 2: execution surface. */
-						__( 'The same non-specific callback-chain churn pattern repeats across multiple plugin pairs in the %1$s context on %2$s. This should be treated as a global anomaly until a single shared resource or remover is identified.', 'plugin-conflict-debugger' ),
+						__( 'The same non-specific callback-chain churn pattern repeats across multiple plugin pairs in the %1$s context on %2$s. This should be treated as a global anomaly until a single shared resource or remover is identified.', 'conflict-debugger' ),
 						$request_context,
-						'' !== $execution_surface ? $execution_surface : __( 'the active execution path', 'plugin-conflict-debugger' )
+						'' !== $execution_surface ? $execution_surface : __( 'the active execution path', 'conflict-debugger' )
 					),
 				'why_scored_this_way'              => ! empty( $pattern_group['is_observer'] )
-					? __( 'Scored as an observer artifact because the same callback-chain churn fingerprint repeats against multiple unrelated plugins instead of isolating one pair-specific resource collision.', 'plugin-conflict-debugger' )
-					: __( 'Scored as a global anomaly because the repeated runtime pattern is broad and non-specific across several plugin pairs.', 'plugin-conflict-debugger' ),
+					? __( 'Scored as an observer artifact because the same callback-chain churn fingerprint repeats against multiple unrelated plugins instead of isolating one pair-specific resource collision.', 'conflict-debugger' )
+					: __( 'Scored as a global anomaly because the repeated runtime pattern is broad and non-specific across several plugin pairs.', 'conflict-debugger' ),
 				'why_this_is_not_or_is_actionable' => ! empty( $pattern_group['is_observer'] )
-					? __( 'This is not a confirmed pairwise conflict. Reproduce the affected request with the observer/debug plugin disabled or compare traces from the same request path before escalating to a plugin-pair diagnosis.', 'plugin-conflict-debugger' )
-					: __( 'This is actionable as a runtime anomaly review, not as a confirmed plugin-pair conflict. Look for a single shared resource or exact remover before treating any pair as confirmed.', 'plugin-conflict-debugger' ),
+					? __( 'This is not a confirmed pairwise conflict. Reproduce the affected request with the observer/debug plugin disabled or compare traces from the same request path before escalating to a plugin-pair diagnosis.', 'conflict-debugger' )
+					: __( 'This is actionable as a runtime anomaly review, not as a confirmed plugin-pair conflict. Look for a single shared resource or exact remover before treating any pair as confirmed.', 'conflict-debugger' ),
 				'recommended_next_step'            => ! empty( $pattern_group['is_observer'] )
-					? __( 'Reproduce the affected request in staging with the observer/debug plugin disabled, then compare the callback chain and runtime failures on the same request path.', 'plugin-conflict-debugger' )
-					: __( 'Capture the same request path again and isolate a single shared resource, callback identifier, or remover before acting on any pairwise diagnosis.', 'plugin-conflict-debugger' ),
+					? __( 'Reproduce the affected request in staging with the observer/debug plugin disabled, then compare the callback chain and runtime failures on the same request path.', 'conflict-debugger' )
+					: __( 'Capture the same request path again and isolate a single shared resource, callback identifier, or remover before acting on any pairwise diagnosis.', 'conflict-debugger' ),
 				'related_plugins'                  => $counterpart_names,
 			);
 		}
@@ -2339,7 +2346,7 @@ final class ConflictDetector {
 
 			foreach ( $keywords as $keyword ) {
 				if ( false !== strpos( $combined, $keyword ) ) {
-					return __( 'This combination matches an internal risk pattern that often deserves manual compatibility testing.', 'plugin-conflict-debugger' );
+					return __( 'This combination matches an internal risk pattern that often deserves manual compatibility testing.', 'conflict-debugger' );
 				}
 			}
 		}
@@ -2360,32 +2367,32 @@ final class ConflictDetector {
 	 */
 	private function build_explanation( array $plugin_a, array $plugin_b, string $finding_type, string $surface_key, string $shared_resource, string $request_context, string $execution_surface = '' ): string {
 		$surface = $this->surfaces[ $surface_key ] ?? array();
-		$area    = (string) ( $surface['affected_area'] ?? __( 'generic site behavior', 'plugin-conflict-debugger' ) );
+		$area    = (string) ( $surface['affected_area'] ?? __( 'generic site behavior', 'conflict-debugger' ) );
 		$context = $request_context ? $request_context : $area;
 		$surface_note = '' !== $execution_surface ? ' ' . sprintf(
 			/* translators: %s execution surface. */
-			__( 'Execution surface: %s.', 'plugin-conflict-debugger' ),
+			__( 'Execution surface: %s.', 'conflict-debugger' ),
 			$execution_surface
 		) : '';
 
 		if ( 'confirmed_conflict' === $finding_type ) {
 			return sprintf(
 				/* translators: 1: plugin A, 2: plugin B, 3: request context, 4: shared resource. */
-				__( 'Confirmed runtime breakage was observed for %1$s and %2$s in the %3$s context. Direct evidence points to %4$s on the live execution path.', 'plugin-conflict-debugger' ),
+				__( 'Confirmed runtime breakage was observed for %1$s and %2$s in the %3$s context. Direct evidence points to %4$s on the live execution path.', 'conflict-debugger' ),
 				(string) $plugin_a['name'],
 				(string) $plugin_b['name'],
 				$context,
-				$shared_resource ? $shared_resource : __( 'this runtime path', 'plugin-conflict-debugger' )
+				$shared_resource ? $shared_resource : __( 'this runtime path', 'conflict-debugger' )
 			) . $surface_note;
 		}
 
 		if ( 'probable_conflict' === $finding_type ) {
 			return sprintf(
 				/* translators: 1: plugin A, 2: plugin B, 3: shared resource, 4: request context. */
-				__( 'Direct evidence suggests %1$s and %2$s both affect %3$s in the %4$s context. This goes beyond broad overlap, but it still needs validation on the affected request path.', 'plugin-conflict-debugger' ),
+				__( 'Direct evidence suggests %1$s and %2$s both affect %3$s in the %4$s context. This goes beyond broad overlap, but it still needs validation on the affected request path.', 'conflict-debugger' ),
 				(string) $plugin_a['name'],
 				(string) $plugin_b['name'],
-				$shared_resource ? $shared_resource : __( 'the same resource', 'plugin-conflict-debugger' ),
+				$shared_resource ? $shared_resource : __( 'the same resource', 'conflict-debugger' ),
 				$context
 			) . $surface_note;
 		}
@@ -2393,7 +2400,7 @@ final class ConflictDetector {
 		if ( 'potential_interference' === $finding_type ) {
 			return sprintf(
 				/* translators: 1: plugin A, 2: plugin B, 3: request context. */
-				__( '%1$s and %2$s show a potential interference pattern in the %3$s context. Supporting indicators line up on the same execution path, but the proof is still incomplete.', 'plugin-conflict-debugger' ),
+				__( '%1$s and %2$s show a potential interference pattern in the %3$s context. Supporting indicators line up on the same execution path, but the proof is still incomplete.', 'conflict-debugger' ),
 				(string) $plugin_a['name'],
 				(string) $plugin_b['name'],
 				$context
@@ -2403,7 +2410,7 @@ final class ConflictDetector {
 		if ( 'observer_artifact' === $finding_type ) {
 			return sprintf(
 				/* translators: 1: plugin A, 2: request context. */
-				__( 'A recurring runtime anomaly involving %1$s was observed in the %2$s context. The repeated fingerprint looks more like observer-plugin callback churn or snapshot timing noise than a unique pair-specific conflict.', 'plugin-conflict-debugger' ),
+				__( 'A recurring runtime anomaly involving %1$s was observed in the %2$s context. The repeated fingerprint looks more like observer-plugin callback churn or snapshot timing noise than a unique pair-specific conflict.', 'conflict-debugger' ),
 				(string) $plugin_a['name'],
 				$context
 			) . $surface_note;
@@ -2412,7 +2419,7 @@ final class ConflictDetector {
 		if ( 'global_anomaly' === $finding_type ) {
 			return sprintf(
 				/* translators: %s request context. */
-				__( 'The same non-specific runtime pattern repeats across multiple plugin pairs in the %s context. Treat it as a global anomaly until a single shared resource or remover is identified.', 'plugin-conflict-debugger' ),
+				__( 'The same non-specific runtime pattern repeats across multiple plugin pairs in the %s context. Treat it as a global anomaly until a single shared resource or remover is identified.', 'conflict-debugger' ),
 				$context
 			) . $surface_note;
 		}
@@ -2420,7 +2427,7 @@ final class ConflictDetector {
 		if ( 'shared_surface' === $finding_type ) {
 			return sprintf(
 				/* translators: 1: plugin A, 2: plugin B, 3: request context. */
-				__( '%1$s and %2$s touch the same execution surface in the %3$s context. That matters more than broad overlap, but no exact shared resource or direct interference is proven yet.', 'plugin-conflict-debugger' ),
+				__( '%1$s and %2$s touch the same execution surface in the %3$s context. That matters more than broad overlap, but no exact shared resource or direct interference is proven yet.', 'conflict-debugger' ),
 				(string) $plugin_a['name'],
 				(string) $plugin_b['name'],
 				$context
@@ -2429,7 +2436,7 @@ final class ConflictDetector {
 
 		return sprintf(
 			/* translators: 1: plugin A, 2: plugin B, 3: request context. */
-			__( '%1$s and %2$s were observed on a shared runtime surface in the %3$s context. That is common in WordPress and is not direct conflict evidence on its own.', 'plugin-conflict-debugger' ),
+			__( '%1$s and %2$s were observed on a shared runtime surface in the %3$s context. That is common in WordPress and is not direct conflict evidence on its own.', 'conflict-debugger' ),
 			(string) $plugin_a['name'],
 			(string) $plugin_b['name'],
 			$context
@@ -2453,19 +2460,19 @@ final class ConflictDetector {
 		if ( 'observer_artifact' === $finding_type ) {
 			return sprintf(
 				/* translators: %s plugin name. */
-				__( 'Recurring runtime anomaly involving %s', 'plugin-conflict-debugger' ),
+				__( 'Recurring runtime anomaly involving %s', 'conflict-debugger' ),
 				(string) $plugin_a['name']
 			);
 		}
 
 		if ( 'global_anomaly' === $finding_type ) {
-			return __( 'Repeated callback-chain interference pattern detected', 'plugin-conflict-debugger' );
+			return __( 'Repeated callback-chain interference pattern detected', 'conflict-debugger' );
 		}
 
 		if ( 'confirmed_conflict' === $finding_type ) {
 			return sprintf(
 				/* translators: 1: plugin A, 2: plugin B. */
-				__( 'Confirmed runtime breakage involving %1$s and %2$s', 'plugin-conflict-debugger' ),
+				__( 'Confirmed runtime breakage involving %1$s and %2$s', 'conflict-debugger' ),
 				(string) $plugin_a['name'],
 				(string) $plugin_b['name']
 			);
@@ -2474,7 +2481,7 @@ final class ConflictDetector {
 		if ( 'probable_conflict' === $finding_type ) {
 			return sprintf(
 				/* translators: 1: shared resource, 2: request context. */
-				__( 'Probable conflict on %1$s in %2$s', 'plugin-conflict-debugger' ),
+				__( 'Probable conflict on %1$s in %2$s', 'conflict-debugger' ),
 				$shared_resource ? $shared_resource : $surface_label,
 				$request_context
 			);
@@ -2483,7 +2490,7 @@ final class ConflictDetector {
 		if ( 'potential_interference' === $finding_type ) {
 			return sprintf(
 				/* translators: %s request context. */
-				__( 'Potential interference in %s', 'plugin-conflict-debugger' ),
+				__( 'Potential interference in %s', 'conflict-debugger' ),
 				$request_context
 			);
 		}
@@ -2491,14 +2498,14 @@ final class ConflictDetector {
 		if ( 'shared_surface' === $finding_type ) {
 			return sprintf(
 				/* translators: %s surface label. */
-				__( 'Shared execution surface in %s', 'plugin-conflict-debugger' ),
+				__( 'Shared execution surface in %s', 'conflict-debugger' ),
 				$surface_label
 			);
 		}
 
 		return sprintf(
 			/* translators: %s surface label. */
-			__( 'Normal overlap on %s', 'plugin-conflict-debugger' ),
+			__( 'Normal overlap on %s', 'conflict-debugger' ),
 			$surface_label
 		);
 	}
@@ -2513,35 +2520,35 @@ final class ConflictDetector {
 	 */
 	private function build_actionability_note( string $finding_type, string $shared_resource, string $request_context, string $execution_surface = '' ): string {
 		if ( 'confirmed_conflict' === $finding_type ) {
-			return __( 'This is actionable because the scan observed runtime breakage rather than just shared plugin presence.', 'plugin-conflict-debugger' );
+			return __( 'This is actionable because the scan observed runtime breakage rather than just shared plugin presence.', 'conflict-debugger' );
 		}
 
 		if ( 'probable_conflict' === $finding_type ) {
 			return sprintf(
 				/* translators: 1: shared resource, 2: request context. */
-				__( 'This is actionable because direct shared-resource evidence points to %1$s in the same %2$s context.', 'plugin-conflict-debugger' ),
-				$shared_resource ? $shared_resource : __( 'the same resource', 'plugin-conflict-debugger' ),
+				__( 'This is actionable because direct shared-resource evidence points to %1$s in the same %2$s context.', 'conflict-debugger' ),
+				$shared_resource ? $shared_resource : __( 'the same resource', 'conflict-debugger' ),
 				$request_context
 			);
 		}
 
 		if ( 'potential_interference' === $finding_type ) {
-			return __( 'This is worth validating on the affected request path, but it is not yet proof that one plugin is breaking the other.', 'plugin-conflict-debugger' );
+			return __( 'This is worth validating on the affected request path, but it is not yet proof that one plugin is breaking the other.', 'conflict-debugger' );
 		}
 
 		if ( 'observer_artifact' === $finding_type ) {
-			return __( 'This is not actionable as a confirmed plugin-pair conflict. Verify the same request without the observer/debug plugin before treating it as pair-specific interference.', 'plugin-conflict-debugger' );
+			return __( 'This is not actionable as a confirmed plugin-pair conflict. Verify the same request without the observer/debug plugin before treating it as pair-specific interference.', 'conflict-debugger' );
 		}
 
 		if ( 'global_anomaly' === $finding_type ) {
-			return __( 'This is actionable as a global runtime anomaly review, not as proof that any one plugin pair is confirmed.', 'plugin-conflict-debugger' );
+			return __( 'This is actionable as a global runtime anomaly review, not as proof that any one plugin pair is confirmed.', 'conflict-debugger' );
 		}
 
 		if ( 'shared_surface' === $finding_type ) {
-			return __( 'This is supporting context only. It becomes useful if a later trace shows a concrete shared resource or runtime failure on the same path.', 'plugin-conflict-debugger' );
+			return __( 'This is supporting context only. It becomes useful if a later trace shows a concrete shared resource or runtime failure on the same path.', 'conflict-debugger' );
 		}
 
-		return __( 'This is broad overlap only. Treat it as background context, not as proof of a conflict.', 'plugin-conflict-debugger' );
+		return __( 'This is broad overlap only. Treat it as background context, not as proof of a conflict.', 'conflict-debugger' );
 	}
 
 	/**
@@ -2558,28 +2565,28 @@ final class ConflictDetector {
 		if ( $this->evidence_has_signal( $evidence_items, array( 'direct_callback_mutation' ) ) ) {
 			return sprintf(
 				/* translators: 1: hook or execution surface, 2: callback label or shared resource, 3: request context. */
-				__( 'Inspect remove_action and remove_filter activity on %1$s, then replay the affected %3$s request while tracing the callback chain for %2$s.', 'plugin-conflict-debugger' ),
-				'' !== $execution_surface ? $execution_surface : __( 'the affected hook', 'plugin-conflict-debugger' ),
-				'' !== $shared_resource ? $shared_resource : __( 'the removed callback', 'plugin-conflict-debugger' ),
-				'' !== $request_context ? $request_context : __( 'runtime', 'plugin-conflict-debugger' )
+				__( 'Inspect remove_action and remove_filter activity on %1$s, then replay the affected %3$s request while tracing the callback chain for %2$s.', 'conflict-debugger' ),
+				'' !== $execution_surface ? $execution_surface : __( 'the affected hook', 'conflict-debugger' ),
+				'' !== $shared_resource ? $shared_resource : __( 'the removed callback', 'conflict-debugger' ),
+				'' !== $request_context ? $request_context : __( 'runtime', 'conflict-debugger' )
 			);
 		}
 
 		if ( $this->evidence_has_signal( $evidence_items, array( 'callback_order_sensitivity', 'callback_chain_churn' ) ) ) {
 			return sprintf(
 				/* translators: 1: hook or execution surface, 2: request context. */
-				__( 'Trace callback order on %1$s and compare priorities across the affected %2$s request before treating this as a confirmed conflict.', 'plugin-conflict-debugger' ),
-				'' !== $execution_surface ? $execution_surface : __( 'the affected hook', 'plugin-conflict-debugger' ),
-				'' !== $request_context ? $request_context : __( 'runtime', 'plugin-conflict-debugger' )
+				__( 'Trace callback order on %1$s and compare priorities across the affected %2$s request before treating this as a confirmed conflict.', 'conflict-debugger' ),
+				'' !== $execution_surface ? $execution_surface : __( 'the affected hook', 'conflict-debugger' ),
+				'' !== $request_context ? $request_context : __( 'runtime', 'conflict-debugger' )
 			);
 		}
 
 		if ( $this->evidence_has_signal( $evidence_items, array( 'asset_state_mutation' ) ) ) {
 			return sprintf(
 				/* translators: 1: resource, 2: request context. */
-				__( 'Trace the asset lifecycle for %1$s and compare registration, queue, and final state on the affected %2$s request.', 'plugin-conflict-debugger' ),
-				'' !== $shared_resource ? $shared_resource : __( 'the affected handle', 'plugin-conflict-debugger' ),
-				'' !== $request_context ? $request_context : __( 'runtime', 'plugin-conflict-debugger' )
+				__( 'Trace the asset lifecycle for %1$s and compare registration, queue, and final state on the affected %2$s request.', 'conflict-debugger' ),
+				'' !== $shared_resource ? $shared_resource : __( 'the affected handle', 'conflict-debugger' ),
+				'' !== $request_context ? $request_context : __( 'runtime', 'conflict-debugger' )
 			);
 		}
 
@@ -2745,24 +2752,24 @@ final class ConflictDetector {
 	 */
 	private function request_context_for_surface( string $surface_key ): string {
 		$contexts = array(
-			'frontend_rendering'     => __( 'frontend', 'plugin-conflict-debugger' ),
-			'asset_loading'          => __( 'frontend', 'plugin-conflict-debugger' ),
-			'admin_screen'           => __( 'admin', 'plugin-conflict-debugger' ),
-			'editor'                 => __( 'editor', 'plugin-conflict-debugger' ),
-			'authentication_account' => __( 'login', 'plugin-conflict-debugger' ),
-			'rest_api_ajax'          => __( 'REST/AJAX', 'plugin-conflict-debugger' ),
-			'forms_submission'       => __( 'forms', 'plugin-conflict-debugger' ),
-			'caching_optimization'   => __( 'frontend', 'plugin-conflict-debugger' ),
-			'seo_metadata'           => __( 'frontend', 'plugin-conflict-debugger' ),
-			'rewrite_routing'        => __( 'routing', 'plugin-conflict-debugger' ),
-			'content_model'          => __( 'content model', 'plugin-conflict-debugger' ),
-			'email_notifications'    => __( 'notifications', 'plugin-conflict-debugger' ),
-			'security_access'        => __( 'login/admin', 'plugin-conflict-debugger' ),
-			'background_processing'  => __( 'cron', 'plugin-conflict-debugger' ),
-			'commerce_checkout'      => __( 'checkout/cart', 'plugin-conflict-debugger' ),
+			'frontend_rendering'     => __( 'frontend', 'conflict-debugger' ),
+			'asset_loading'          => __( 'frontend', 'conflict-debugger' ),
+			'admin_screen'           => __( 'admin', 'conflict-debugger' ),
+			'editor'                 => __( 'editor', 'conflict-debugger' ),
+			'authentication_account' => __( 'login', 'conflict-debugger' ),
+			'rest_api_ajax'          => __( 'REST/AJAX', 'conflict-debugger' ),
+			'forms_submission'       => __( 'forms', 'conflict-debugger' ),
+			'caching_optimization'   => __( 'frontend', 'conflict-debugger' ),
+			'seo_metadata'           => __( 'frontend', 'conflict-debugger' ),
+			'rewrite_routing'        => __( 'routing', 'conflict-debugger' ),
+			'content_model'          => __( 'content model', 'conflict-debugger' ),
+			'email_notifications'    => __( 'notifications', 'conflict-debugger' ),
+			'security_access'        => __( 'login/admin', 'conflict-debugger' ),
+			'background_processing'  => __( 'cron', 'conflict-debugger' ),
+			'commerce_checkout'      => __( 'checkout/cart', 'conflict-debugger' ),
 		);
 
-		return $contexts[ $surface_key ] ?? __( 'runtime', 'plugin-conflict-debugger' );
+		return $contexts[ $surface_key ] ?? __( 'runtime', 'conflict-debugger' );
 	}
 
 	/**
@@ -2818,7 +2825,7 @@ final class ConflictDetector {
 		}
 
 		if ( 'recent_change' === $signal_key ) {
-			return __( 'recent plugin changes', 'plugin-conflict-debugger' );
+			return __( 'recent plugin changes', 'conflict-debugger' );
 		}
 
 		return '';
@@ -3127,15 +3134,15 @@ final class ConflictDetector {
 		$text = strtolower( $source . ' ' . $handle );
 
 		if ( false !== strpos( $text, 'lazy' ) ) {
-			return __( 'lazy loading', 'plugin-conflict-debugger' );
+			return __( 'lazy loading', 'conflict-debugger' );
 		}
 
 		if ( false !== strpos( $text, 'defer' ) || false !== strpos( $text, 'delay' ) ) {
-			return __( 'script deferral/delay', 'plugin-conflict-debugger' );
+			return __( 'script deferral/delay', 'conflict-debugger' );
 		}
 
 		if ( false !== strpos( $text, 'min' ) && ( false !== strpos( $text, 'css' ) || false !== strpos( $text, 'js' ) ) ) {
-			return __( 'minification/deferred assets', 'plugin-conflict-debugger' );
+			return __( 'minification/deferred assets', 'conflict-debugger' );
 		}
 
 		return null;

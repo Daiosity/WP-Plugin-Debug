@@ -1,5 +1,5 @@
 param(
-	[string]$Version = '1.1.1'
+	[string]$Version = '1.1.3'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -9,14 +9,14 @@ Add-Type -AssemblyName System.IO.Compression.FileSystem
 $root = Split-Path -Parent $PSScriptRoot
 $buildRoot = Join-Path $root 'build'
 $stagingRoot = Join-Path $buildRoot '_package-staging'
-$wpPackageRoot = Join-Path $stagingRoot 'plugin-conflict-debugger'
+$wpPackageRoot = Join-Path $stagingRoot 'conflict-debugger'
 $hostFlatRoot = Join-Path $stagingRoot '_host-flat'
-$wpZipPath = Join-Path $buildRoot 'plugin-conflict-debugger-wp-admin.zip'
-$hostZipPath = Join-Path $buildRoot 'plugin-conflict-debugger.zip'
-$legacyHostZipPath = Join-Path $buildRoot 'plugin-conflict-debugger-host-extract.zip'
+$wpZipPath = Join-Path $buildRoot 'conflict-debugger-wp-admin.zip'
+$hostZipPath = Join-Path $buildRoot 'conflict-debugger.zip'
+$legacyHostZipPath = Join-Path $buildRoot 'conflict-debugger-host-extract.zip'
 
 $requiredItems = @(
-	'plugin-conflict-debugger.php',
+	'conflict-debugger.php',
 	'readme.txt',
 	'uninstall.php',
 	'assets',
@@ -99,7 +99,7 @@ foreach ($item in $requiredItems) {
 	Copy-Item -LiteralPath $sourcePath -Destination $hostFlatRoot -Recurse
 }
 
-New-NormalizedZip -SourceRoot $wpPackageRoot -ZipPath $wpZipPath -RootPrefix 'plugin-conflict-debugger'
+New-NormalizedZip -SourceRoot $wpPackageRoot -ZipPath $wpZipPath -RootPrefix 'conflict-debugger'
 New-NormalizedZip -SourceRoot $hostFlatRoot -ZipPath $hostZipPath
 
 Remove-Item -LiteralPath $stagingRoot -Recurse -Force

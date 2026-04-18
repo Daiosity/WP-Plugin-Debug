@@ -489,15 +489,15 @@ final class AssetLifecycleTracer {
 	 * @return string
 	 */
 	private function build_asset_message( string $type, string $mutation_kind, string $handle, string $owner_slug, array $actor_meta, array $meta ): string {
-		$hook_name    = sanitize_text_field( (string) ( $meta['hook'] ?? __( 'asset lifecycle', 'plugin-conflict-debugger' ) ) );
-		$owner_label  = '' !== $owner_slug ? $owner_slug : __( 'unknown owner', 'plugin-conflict-debugger' );
+		$hook_name    = sanitize_text_field( (string) ( $meta['hook'] ?? __( 'asset lifecycle', 'conflict-debugger' ) ) );
+		$owner_label  = '' !== $owner_slug ? $owner_slug : __( 'unknown owner', 'conflict-debugger' );
 		$actor_slug   = sanitize_key( (string) ( $actor_meta['actor_slug'] ?? '' ) );
 		$actor_status = (string) ( $actor_meta['attribution_status'] ?? TraceEvent::ATTRIBUTION_UNKNOWN );
 
 		if ( 'asset_registered' === $mutation_kind ) {
 			return sprintf(
 				/* translators: 1: handle, 2: owner slug, 3: hook name. */
-				__( 'Handle %1$s was registered for %2$s during %3$s.', 'plugin-conflict-debugger' ),
+				__( 'Handle %1$s was registered for %2$s during %3$s.', 'conflict-debugger' ),
 				$handle,
 				$owner_label,
 				$hook_name
@@ -507,7 +507,7 @@ final class AssetLifecycleTracer {
 		if ( 'asset_enqueued' === $mutation_kind ) {
 			return sprintf(
 				/* translators: 1: type, 2: handle, 3: hook name. */
-				__( 'The %1$s handle %2$s entered the queue during %3$s.', 'plugin-conflict-debugger' ),
+				__( 'The %1$s handle %2$s entered the queue during %3$s.', 'conflict-debugger' ),
 				$type,
 				$handle,
 				$hook_name
@@ -517,7 +517,7 @@ final class AssetLifecycleTracer {
 		if ( in_array( $mutation_kind, array( 'asset_dequeued', 'asset_deregistered' ), true ) && '' !== $actor_slug && TraceEvent::ATTRIBUTION_UNKNOWN !== $actor_status ) {
 			return sprintf(
 				/* translators: 1: handle, 2: owner slug, 3: mutation kind, 4: actor slug, 5: hook name. */
-				__( 'Handle %1$s owned by %2$s was %3$s while %4$s was the clearest mutator candidate on %5$s.', 'plugin-conflict-debugger' ),
+				__( 'Handle %1$s owned by %2$s was %3$s while %4$s was the clearest mutator candidate on %5$s.', 'conflict-debugger' ),
 				$handle,
 				$owner_label,
 				str_replace( '_', ' ', str_replace( 'asset_', '', $mutation_kind ) ),
@@ -529,7 +529,7 @@ final class AssetLifecycleTracer {
 		if ( in_array( $mutation_kind, array( 'asset_dequeued', 'asset_deregistered' ), true ) ) {
 			return sprintf(
 				/* translators: 1: handle, 2: owner slug, 3: mutation kind, 4: hook name. */
-				__( 'Handle %1$s owned by %2$s was %3$s during %4$s, but the mutating callback could not yet be attributed with certainty.', 'plugin-conflict-debugger' ),
+				__( 'Handle %1$s owned by %2$s was %3$s during %4$s, but the mutating callback could not yet be attributed with certainty.', 'conflict-debugger' ),
 				$handle,
 				$owner_label,
 				str_replace( '_', ' ', str_replace( 'asset_', '', $mutation_kind ) ),
@@ -539,7 +539,7 @@ final class AssetLifecycleTracer {
 
 		return sprintf(
 			/* translators: 1: handle, 2: mutation kind, 3: hook name. */
-			__( 'Handle %1$s changed state (%2$s) during %3$s.', 'plugin-conflict-debugger' ),
+			__( 'Handle %1$s changed state (%2$s) during %3$s.', 'conflict-debugger' ),
 			$handle,
 			str_replace( '_', ' ', str_replace( 'asset_', '', $mutation_kind ) ),
 			$hook_name
@@ -626,7 +626,7 @@ final class AssetLifecycleTracer {
 		$resource_hints  = array();
 
 		if ( wp_doing_ajax() ) {
-			$action = sanitize_key( (string) ( $_REQUEST['action'] ?? '' ) );
+			$action = $this->current_ajax_action();
 			if ( '' !== $action ) {
 				$scope_type     = 'ajax';
 				$request_scope  = 'ajax:' . $action;
@@ -777,8 +777,26 @@ final class AssetLifecycleTracer {
 	 * @return string
 	 */
 	private function current_request_uri(): string {
-		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? wp_unslash( (string) $_SERVER['REQUEST_URI'] ) : '/';
-		return sanitize_text_field( $request_uri );
+		if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+			return '/';
+		}
+
+		return sanitize_text_field( wp_unslash( (string) $_SERVER['REQUEST_URI'] ) );
+	}
+
+	/**
+	 * Returns the current AJAX action name.
+	 *
+	 * @return string
+	 */
+	private function current_ajax_action(): string {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only request classification for trace scope capture.
+		if ( ! isset( $_REQUEST['action'] ) ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only request classification for trace scope capture.
+		return sanitize_key( wp_unslash( (string) $_REQUEST['action'] ) );
 	}
 
 	/**
@@ -787,9 +805,10 @@ final class AssetLifecycleTracer {
 	 * @return string
 	 */
 	private function detect_rest_route(): string {
-		$rest_route = isset( $_REQUEST['rest_route'] ) ? wp_unslash( (string) $_REQUEST['rest_route'] ) : '';
-		if ( '' !== $rest_route ) {
-			return sanitize_text_field( $rest_route );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only route detection for trace scope capture.
+		if ( isset( $_REQUEST['rest_route'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only route detection for trace scope capture.
+			return sanitize_text_field( wp_unslash( (string) $_REQUEST['rest_route'] ) );
 		}
 
 		$request_uri = $this->current_request_uri();

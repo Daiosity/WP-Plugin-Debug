@@ -28,7 +28,7 @@ Tell us what you expected instead.
 
 - WordPress version:
 - PHP version:
-- Plugin Conflict Debugger version:
+- Conflict Debugger version:
 - Theme:
 - Hosting/local environment:
 
